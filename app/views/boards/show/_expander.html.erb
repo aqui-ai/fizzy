@@ -3,6 +3,9 @@
   <span class="cards__expander-count" data-drag-and-drop-counter="true"><%= count > 99 ? "99+" : count %></span>
   <h2 class="cards__expander-title" data-collapsible-columns-target="title">
     <%= title %>
+    <% if local_assigns[:overdue_count].to_i.positive? %>
+      <span class="cards__overdue-count"><%= pluralize local_assigns[:overdue_count], "overdue" %></span>
+    <% end %>
     <%= icon_tag "collapse" %>
   </h2>
 </button>

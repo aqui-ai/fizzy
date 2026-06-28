@@ -1,7 +1,7 @@
 class Card < ApplicationRecord
   include Accessible, Assignable, Attachments, Broadcastable, Closeable, Colored, Commentable,
-    Entropic, Eventable, Exportable, Golden, Mentions, Multistep, Pinnable, Postponable, Promptable,
-    Readable, Searchable, Stallable, Statuses, Storage::Tracked, Taggable, Triageable, Watchable
+    Deadline, Entropic, Eventable, Exportable, Golden, Mentions, Multistep, Pinnable, Postponable, Promptable,
+    Prioritizable, Readable, Searchable, Stallable, Statuses, Storage::Tracked, Taggable, Triageable, Watchable
 
   belongs_to :account, default: -> { board.account }
   belongs_to :board
@@ -24,6 +24,12 @@ class Card < ApplicationRecord
   scope :latest,                  -> { order last_active_at: :desc, id: :desc }
   scope :with_users,              -> { preload(creator: [ :avatar_attachment, :account ], assignees: [ :avatar_attachment, :account ]) }
   scope :preloaded,               -> { with_users.preload(:column, :tags, :steps, :closure, :goldness, :activity_spike, :image_attachment, reactions: :reacter, board: [ :entropy, :columns ], not_now: [ :user ]).with_rich_text_description_and_embeds }
+  scope :with_deadline,           -> { where.not(due_on: nil) }
+  scope :without_deadline,        -> { where(due_on: nil) }
+  scope :no_deadline,             -> { without_deadline }
+  scope :due_today,               -> { where(due_on: Date.current) }
+  scope :overdue,                 -> { where(due_on: ...Date.current) }
+  scope :due_soon,                -> { where(due_on: Date.current..7.days.from_now.to_date) }
 
   scope :indexed_by, ->(index) do
     case index
@@ -43,6 +49,8 @@ class Card < ApplicationRecord
     when "newest" then reverse_chronologically
     when "oldest" then chronologically
     when "latest" then latest
+    when "deadline_soonest" then order(Arel.sql("due_on IS NULL, due_on ASC"), id: :asc)
+    when "deadline_latest" then order(Arel.sql("due_on IS NULL, due_on DESC"), id: :desc)
     else latest
     end
   end

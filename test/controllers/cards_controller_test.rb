@@ -83,8 +83,13 @@ class CardsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "edit" do
-    get edit_card_path(cards(:logo))
+    card = cards(:logo)
+
+    get edit_card_path(card)
     assert_response :success
+
+    assert_select "button[form=?][name='card[priority]']", dom_id(card, :edit_form)
+    assert_select "input[form=?][name='card[due_on]']", dom_id(card, :edit_form)
   end
 
   test "edit card with invalid attachments in description" do
@@ -109,6 +114,17 @@ class CardsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Logo needs to change", card.title
     assert_equal "moon.jpg", card.image.filename.to_s
     assert_equal "Something more in-depth", card.description.to_plain_text.strip
+  end
+
+  test "update priority while keeping editor open" do
+    card = cards(:logo)
+
+    patch card_path(card), as: :turbo_stream, params: { keep_editing: true, card: { priority: "urgent" } }
+    assert_response :success
+
+    assert_equal "urgent", card.reload.priority
+    assert_match dom_id(card, :badges), response.body
+    assert_no_match dom_id(card, :card_container), response.body
   end
 
   test "update draft card does not render reactions" do
@@ -205,6 +221,8 @@ class CardsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     assert_equal card.title, @response.parsed_body["title"]
+    assert_equal card.priority, @response.parsed_body["priority"]
+    assert_equal card.due_on.iso8601, @response.parsed_body["due_on"]
     assert_equal card.closed?, @response.parsed_body["closed"]
     assert_equal card.postponed?, @response.parsed_body["postponed"]
     assert_equal 2, @response.parsed_body["steps"].size
@@ -213,9 +231,11 @@ class CardsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "create as JSON" do
+    due_on = Date.new(2026, 7, 15)
+
     assert_difference -> { Card.count }, +1 do
       post board_cards_path(boards(:writebook)),
-        params: { card: { title: "My new card", description: "Big if true" } },
+        params: { card: { title: "My new card", description: "Big if true", priority: "high", due_on: due_on } },
         as: :json
       assert_response :created
     end
@@ -223,9 +243,34 @@ class CardsControllerTest < ActionDispatch::IntegrationTest
     card = Card.last
     assert_equal card_path(card, format: :json), @response.headers["Location"]
     assert_equal "My new card", @response.parsed_body["title"]
+    assert_equal "high", @response.parsed_body["priority"]
+    assert_equal due_on.iso8601, @response.parsed_body["due_on"]
 
     assert_equal "My new card", card.title
     assert_equal "Big if true", card.description.to_plain_text
+    assert_equal "high", card.priority
+    assert_equal due_on, card.due_on
+  end
+
+  test "update as JSON with priority" do
+    card = cards(:logo)
+
+    put card_path(card, format: :json), params: { card: { priority: "urgent" } }
+    assert_response :success
+
+    assert_equal "urgent", card.reload.priority
+    assert_equal "urgent", @response.parsed_body["priority"]
+  end
+
+  test "update as JSON with due_on" do
+    card = cards(:logo)
+    due_on = Date.new(2026, 8, 1)
+
+    put card_path(card, format: :json), params: { card: { due_on: due_on } }
+    assert_response :success
+
+    assert_equal due_on, card.reload.due_on
+    assert_equal due_on.iso8601, @response.parsed_body["due_on"]
   end
 
   test "create as JSON with custom created_at" do

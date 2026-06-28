@@ -140,6 +140,37 @@
     }
   }
 
+  .card__badges {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5ch;
+    min-inline-size: 0;
+  }
+
+  .card__badges--controls {
+    align-items: center;
+    gap: 0.5ch;
+  }
+
+  .card__badge-picker {
+    align-items: center;
+    display: flex;
+    position: relative;
+
+    .popup {
+      --panel-size: 18ch;
+
+      inset-block-start: 100%;
+    }
+  }
+
+  .card__badge-picker-button {
+    --btn-background: transparent;
+    --btn-border-color: transparent;
+    padding: 0;
+  }
+
   .card__tag-picker {
     --panel-border-radius: 2em;
     --panel-padding: 0.5em 0.7em;
@@ -254,6 +285,86 @@
       --btn-border-color: var(--card-color);
       --btn-color: var(--card-color);
     }
+  }
+
+  .card__deadline-field,
+  .card__priority-field {
+    align-items: start;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5ch;
+    margin-block-start: var(--block-space);
+    max-inline-size: 18ch;
+  }
+
+  .card__priority-field {
+    max-inline-size: 22ch;
+  }
+
+  .card__priority {
+    border: 1px solid currentColor;
+    border-radius: 2em;
+    color: var(--card-text-color);
+    display: inline-flex;
+    font-size: var(--text-x-small);
+    font-weight: 900;
+    line-height: 1;
+    padding: 0.45em 0.7em;
+    text-transform: uppercase;
+  }
+
+  .card__priority--low {
+    color: var(--color-positive);
+  }
+
+  .card__priority--medium {
+    color: var(--card-text-color);
+  }
+
+  .card__priority--high {
+    color: var(--color-selected-dark);
+  }
+
+  .card__priority--urgent {
+    color: var(--color-negative);
+  }
+
+  .card__priority--none {
+    color: var(--card-text-color);
+    opacity: 0.66;
+  }
+
+  .card__deadline-shortcuts {
+    .btn {
+      --btn-border-color: color-mix(in srgb, var(--card-color) 35%, var(--color-ink-inverted));
+      --btn-color: var(--card-text-color);
+    }
+  }
+
+  .card__deadline {
+    border: 1px solid color-mix(in srgb, var(--card-color) 35%, var(--color-ink-inverted));
+    border-radius: 2em;
+    color: var(--card-text-color);
+    display: inline-flex;
+    font-size: var(--text-x-small);
+    font-weight: 800;
+    line-height: 1;
+    padding: 0.45em 0.7em;
+    text-transform: uppercase;
+  }
+
+  .card__deadline--overdue {
+    border-color: var(--color-negative);
+    color: var(--color-negative);
+  }
+
+  .card__deadline--today {
+    border-color: var(--color-selected-dark);
+    color: var(--color-selected-dark);
+  }
+
+  .card__deadline--soon {
+    border-color: var(--card-color);
   }
 
   .card__stages {

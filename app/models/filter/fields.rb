@@ -2,13 +2,14 @@ module Filter::Fields
   extend ActiveSupport::Concern
 
   INDEXES = %w[ all closed not_now stalled postponing_soon golden ]
-  SORTED_BY = %w[ newest oldest latest ]
+  DEADLINES = %w[ any overdue due_today due_soon no_deadline ]
+  SORTED_BY = %w[ newest oldest latest deadline_soonest deadline_latest ]
 
   delegate :default_value?, to: :class
 
   class_methods do
     def default_values
-      { indexed_by: "all", sorted_by: "latest" }
+      { indexed_by: "all", deadline: "any", sorted_by: "latest" }
     end
 
     def default_value?(key, value)
@@ -27,10 +28,25 @@ module Filter::Fields
         index.humanize
       end
     end
+
+    def deadline_human_name(deadline)
+      case deadline
+      when "any"
+        "Any deadline"
+      when "due_today"
+        "Due today"
+      when "due_soon"
+        "Due this week"
+      when "no_deadline"
+        "No deadline"
+      else
+        deadline.humanize
+      end
+    end
   end
 
   included do
-    store_accessor :fields, :assignment_status, :indexed_by, :sorted_by, :terms,
+    store_accessor :fields, :assignment_status, :indexed_by, :deadline, :sorted_by, :terms,
       :card_ids, :creation, :closure, :column_ids
 
     def assignment_status
@@ -43,6 +59,10 @@ module Filter::Fields
 
     def sorted_by
       (super || default_sorted_by).inquiry
+    end
+
+    def deadline
+      (super || default_deadline).inquiry
     end
 
     def creation_window
@@ -92,5 +112,13 @@ module Filter::Fields
 
   def default_sorted_by?
     default_value?(:sorted_by, sorted_by)
+  end
+
+  def default_deadline
+    self.class.default_values[:deadline]
+  end
+
+  def default_deadline?
+    default_value?(:deadline, deadline)
   end
 end

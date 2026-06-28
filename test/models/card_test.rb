@@ -23,6 +23,22 @@ class CardTest < ActiveSupport::TestCase
     assert_not cards(:logo).assigned_to?(users(:david))
   end
 
+  test "priority" do
+    card = cards(:logo)
+
+    assert_equal "none", card.priority
+    assert_equal "No priority", card.priority_label
+    assert_not card.prioritized?
+
+    card.priority = "urgent"
+    assert_predicate card, :valid?
+    assert_equal "Urgent", card.priority_label
+    assert card.prioritized?
+
+    card.priority = "critical"
+    assert_not card.valid?
+  end
+
   test "assignment toggling" do
     assert cards(:logo).assigned_to?(users(:kevin))
 

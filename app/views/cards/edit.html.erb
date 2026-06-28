@@ -6,6 +6,10 @@
     <%= render "cards/container/save_button", card: @card %>
   <% end %>
 
+  <%= turbo_stream.update dom_id(@card, :badges) do %>
+    <%= render "cards/display/common/badge_controls", card: @card, form_id: dom_id(@card, :edit_form) %>
+  <% end %>
+
   <%= form_with model: @card, id: dom_id(@card, :edit_form),
         data: { controller: "autoresize form local-save", local_save_key_value: "card-#{@card.id}", action: "turbo:submit-end->local-save#submit" } do |form| %>
     <h1 class="card__title flex align-start gap-half">

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_02_18_120000) do
+ActiveRecord::Schema[8.2].define(version: 2026_06_28_121000) do
   create_table "accesses", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "accessed_at"
     t.uuid "account_id", null: false
@@ -221,9 +221,12 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_18_120000) do
     t.uuid "column_id"
     t.datetime "created_at", null: false
     t.uuid "creator_id", null: false
+    t.datetime "due_notified_at"
     t.date "due_on"
     t.datetime "last_active_at", null: false
     t.bigint "number", null: false
+    t.datetime "overdue_notified_at"
+    t.string "priority", default: "none", null: false
     t.string "status", default: "drafted", null: false
     t.string "title"
     t.datetime "updated_at", null: false

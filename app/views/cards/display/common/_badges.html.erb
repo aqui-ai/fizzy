@@ -1,0 +1,7 @@
+<div class="card__badges">
+  <%= card_priority_badge(card) %>
+
+  <% if card.due_on? %>
+    <%= time_tag card.due_on, card_deadline_label(card, format: :short), class: card_deadline_classes(card) %>
+  <% end %>
+</div>

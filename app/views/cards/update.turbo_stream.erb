@@ -1,10 +1,18 @@
 <% container_partial = @card.drafted? ? "cards/drafts/container" : "cards/container" %>
-<%= turbo_stream.replace dom_id(@card, :card_container), partial: container_partial, method: :morph, locals: { card: @card.reload } %>
+<% keep_editing = params[:keep_editing].present? %>
 
-<%= turbo_stream.update dom_id(@card, :edit) do %>
-  <%= render "cards/container/content_display", card: @card %>
-<% end %>
+<% if keep_editing %>
+  <%= turbo_stream.update dom_id(@card, :badges) do %>
+    <%= render "cards/display/common/badge_controls", card: @card.reload, form_id: dom_id(@card, :edit_form) %>
+  <% end %>
+<% else %>
+  <%= turbo_stream.replace dom_id(@card, :card_container), partial: container_partial, method: :morph, locals: { card: @card.reload } %>
 
-<%= turbo_stream.replace dom_id(@card, :card_closure_toggle) do %>
-  <%= render "cards/container/closure", card: @card %>
+  <%= turbo_stream.update dom_id(@card, :edit) do %>
+    <%= render "cards/container/content_display", card: @card %>
+  <% end %>
+
+  <%= turbo_stream.replace dom_id(@card, :card_closure_toggle) do %>
+    <%= render "cards/container/closure", card: @card %>
+  <% end %>
 <% end %>

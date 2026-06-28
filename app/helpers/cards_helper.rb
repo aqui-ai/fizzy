@@ -32,6 +32,53 @@ module CardsHelper
     card.drafted? ? "Drafted" : "Added"
   end
 
+  def card_deadline_label(card, format: :long)
+    return unless card.due_on?
+
+    date = format == :short ? card.due_on.strftime("%b %-d") : card.due_on.strftime("%b %-d, %Y")
+    [ card_deadline_status(card), date ].join(" ")
+  end
+
+  def card_deadline_classes(card)
+    class_names(
+      "card__deadline",
+      "card__deadline--today": card.due_on? && card.due_on == Date.current,
+      "card__deadline--soon": card.due_on? && card.due_on.in?(Date.tomorrow..7.days.from_now.to_date),
+      "card__deadline--overdue": card.due_on? && card.due_on < Date.current
+    )
+  end
+
+  def card_deadline_shortcut_button(label, days: nil, clear: false)
+    action = clear ? "deadline#clear" : "deadline#set"
+    data = { action: action }
+    data[:deadline_days_value] = days unless clear
+
+    button_tag label, type: "button", class: "btn txt-x-small", data: data
+  end
+
+  def card_deadline_status(card)
+    case card.due_on
+    when ...Date.current
+      "Overdue"
+    when Date.current
+      "Due today"
+    when Date.tomorrow..7.days.from_now.to_date
+      "Due soon"
+    else
+      "Deadline"
+    end
+  end
+
+  def card_priority_badge(card)
+    return unless card.prioritized?
+
+    tag.span card.priority_label, class: card_priority_classes(card)
+  end
+
+  def card_priority_classes(card)
+    class_names("card__priority", "card__priority--#{card.priority}")
+  end
+
   def card_social_tags(card)
     tag.meta(property: "og:title", content: "#{card.title} | #{card.board.name}") +
     tag.meta(property: "og:description", content: format_excerpt(card&.description, length: 200)) +

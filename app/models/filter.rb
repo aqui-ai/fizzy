@@ -20,6 +20,7 @@ class Filter < ApplicationRecord
     @cards ||= begin
       result = creator.accessible_cards.preloaded.published
       result = result.indexed_by(indexed_by)
+      result = result.public_send(deadline) unless deadline.any?
       result = result.sorted_by(sorted_by)
       result = result.where(id: card_ids) if card_ids.present?
       result = result.where.missing(:not_now) unless include_not_now_cards?

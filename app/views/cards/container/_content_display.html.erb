@@ -2,6 +2,10 @@
   <%= link_to card_html_title(card), edit_card_path(card), class: "card__title-link" %>
 </h1>
 
+<%= turbo_stream.update dom_id(card, :badges) do %>
+  <%= render "cards/display/common/badges", card: card %>
+<% end %>
+
 <% unless card.description.blank? %>
   <div class="card__description lexxy-content" data-controller="syntax-highlight retarget-links">
     <%= card.description %>

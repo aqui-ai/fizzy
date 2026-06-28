@@ -36,6 +36,10 @@ class Event < ApplicationRecord
     eventable
   end
 
+  def notify_recipients_later
+    super unless action.card_due? || action.card_overdue?
+  end
+
   def description_for(user)
     Event::Description.new(self, user)
   end

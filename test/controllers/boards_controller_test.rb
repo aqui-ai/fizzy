@@ -15,6 +15,19 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "show renders overdue counts for active columns" do
+    travel_to Time.zone.local(2026, 6, 15) do
+      cards(:logo).update!(due_on: Date.yesterday)
+      cards(:buy_domain).update!(due_on: Date.yesterday)
+
+      get board_path(boards(:writebook))
+      assert_response :success
+
+      assert_select "##{dom_id(columns(:writebook_triage))} .cards__overdue-count", "1 overdue"
+      assert_select "#maybe .cards__overdue-count", "1 overdue"
+    end
+  end
+
   test "invalidates page title cache when account updates" do
     get board_path(boards(:writebook))
     etag = response.headers["ETag"]

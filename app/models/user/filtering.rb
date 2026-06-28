@@ -48,6 +48,10 @@ class User::Filtering
     !filter.sorted_by.latest?
   end
 
+  def show_deadline?
+    !filter.deadline.any?
+  end
+
   def show_tags?
     return unless Tag.any?
     filter.tags.any?

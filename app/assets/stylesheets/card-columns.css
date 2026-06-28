@@ -523,6 +523,20 @@
     }
   }
 
+  .cards__overdue-count {
+    border: 1px solid var(--color-negative);
+    border-radius: 99rem;
+    color: var(--color-negative);
+    font-size: 0.85em;
+    font-weight: 800;
+    line-height: 1;
+    padding: 0.35em 0.55em;
+
+    .cards.is-collapsed & {
+      display: none;
+    }
+  }
+
   /* Override card styles within columns
   /* Adding .board-tools here since it sits outside the cards container on mobile */
   /* ------------------------------------------------------------------------ */

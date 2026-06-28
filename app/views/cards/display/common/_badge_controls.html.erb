@@ -1,0 +1,57 @@
+<div class="card__badges card__badges--controls">
+  <div class="card__badge-picker" data-controller="dialog" data-action="keydown.esc->dialog#close click@document->dialog#closeOnClickOutside">
+    <button type="button" class="card__badge-picker-button btn btn--plain" data-action="click->dialog#open:stop">
+      <%= card_priority_badge(card) || tag.span("Priority", class: "card__priority card__priority--none") %>
+    </button>
+
+    <dialog class="popup panel flex-column align-start justify-start fill-white shadow txt-small"
+        data-dialog-target="dialog"
+        data-action="turbo:submit-end->dialog#close">
+      <strong class="popup__title">Set priority…</strong>
+
+      <ul class="popup__list" role="listbox">
+        <% Card.priority_options.each do |label, priority| %>
+          <li class="popup__item" aria-checked="<%= card.priority == priority %>">
+            <button type="submit" name="card[priority]" value="<%= priority %>" form="<%= form_id %>" formaction="<%= card_path(card, keep_editing: true) %>" class="popup__btn btn">
+              <span class="overflow-ellipsis flex-item-grow"><%= label %></span>
+              <%= icon_tag "check", class: "checked flex-item-no-shrink flex-item-justify-end", style: "--icon-size: 1em" %>
+            </button>
+          </li>
+        <% end %>
+      </ul>
+    </dialog>
+  </div>
+
+  <div class="card__badge-picker" data-controller="dialog deadline form-submit" data-action="keydown.esc->dialog#close click@document->dialog#closeOnClickOutside">
+    <button type="button" class="card__badge-picker-button btn btn--plain" data-action="click->dialog#open:stop">
+      <% if card.due_on? %>
+        <%= time_tag card.due_on, card_deadline_label(card, format: :short), class: card_deadline_classes(card) %>
+      <% else %>
+        <span class="card__deadline">Deadline</span>
+      <% end %>
+    </button>
+
+    <dialog class="popup panel flex-column align-start justify-start fill-white shadow txt-small"
+        data-dialog-target="dialog"
+        data-action="turbo:submit-end->dialog#close">
+      <strong class="popup__title">Set deadline…</strong>
+
+      <div class="flex flex-column gap-half full-width margin-block-half">
+        <%= label_tag "#{form_id}_due_on", "Deadline", class: "for-screen-reader" %>
+        <%= date_field_tag "card[due_on]",
+              card.due_on,
+              id: "#{form_id}_due_on",
+              form: form_id,
+              class: "input txt-small full-width",
+              data: { deadline_target: "input", action: "change->form-submit#submit" } %>
+      </div>
+
+      <ul class="popup__list">
+        <li class="popup__item"><%= button_tag "Today", type: "button", class: "popup__btn btn", data: { action: "deadline#set", deadline_days_value: 0 } %></li>
+        <li class="popup__item"><%= button_tag "Tomorrow", type: "button", class: "popup__btn btn", data: { action: "deadline#set", deadline_days_value: 1 } %></li>
+        <li class="popup__item"><%= button_tag "Next week", type: "button", class: "popup__btn btn", data: { action: "deadline#set", deadline_days_value: 7 } %></li>
+        <li class="popup__item"><%= button_tag "Clear deadline", type: "button", class: "popup__btn btn", data: { action: "deadline#clear" } %></li>
+      </ul>
+    </dialog>
+  </div>
+</div>

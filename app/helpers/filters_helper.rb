@@ -72,6 +72,10 @@ module FiltersHelper
       "Oldest to newest"
     when "latest"
       "Recently updated"
+    when "deadline_soonest"
+      "Deadline soonest"
+    when "deadline_latest"
+      "Deadline latest"
     else
       sort_value.humanize
     end

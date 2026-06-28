@@ -1,6 +1,6 @@
 module Filter::Summarized
   def summary
-    [ index_summary, sort_summary, tag_summary, assignee_summary, creator_summary, terms_summary ].compact.to_sentence
+    [ index_summary, deadline_summary, sort_summary, tag_summary, assignee_summary, creator_summary, terms_summary ].compact.to_sentence
   end
 
   private
@@ -13,6 +13,12 @@ module Filter::Summarized
     def sort_summary
       unless sorted_by.latest?
         sorted_by.humanize
+      end
+    end
+
+    def deadline_summary
+      unless deadline.any?
+        self.class.deadline_human_name(deadline)
       end
     end
 

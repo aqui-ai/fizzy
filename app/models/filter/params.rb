@@ -4,6 +4,7 @@ module Filter::Params
   PERMITTED_PARAMS = [
     :assignment_status,
     :indexed_by,
+    :deadline,
     :sorted_by,
     :creation,
     :closure,
@@ -44,7 +45,7 @@ module Filter::Params
   def used?(ignore_boards: false)
     tags.any? || assignees.any? || creators.any? || closers.any? ||
       terms.any? || card_ids&.any? || (!ignore_boards && boards.present?) ||
-      assignment_status.unassigned? || !indexed_by.all? || !sorted_by.latest?
+      assignment_status.unassigned? || !indexed_by.all? || !deadline.any? || !sorted_by.latest?
   end
 
   # +as_params+ uses `resource#ids` instead of `#resource_ids`
@@ -52,6 +53,7 @@ module Filter::Params
   def as_params
     @as_params ||= {}.tap do |params|
       params[:indexed_by]        = indexed_by
+      params[:deadline]          = deadline
       params[:sorted_by]         = sorted_by
       params[:creation]          = creation
       params[:closure]           = closure

@@ -1,0 +1,22 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: bash -lc "bundle install && bin/rails db:prepare && bin/dev"
+    environment:
+      DATABASE_ADAPTER: sqlite
+      RAILS_ENV: development
+      SOLID_QUEUE_IN_PUMA: "false"
+    ports:
+      - "3006:3006"
+    volumes:
+      - .:/rails
+      - bundle:/usr/local/bundle
+      - storage:/rails/storage
+      - tmp:/rails/tmp
+
+volumes:
+  bundle:
+  storage:
+  tmp:

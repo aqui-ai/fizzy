@@ -8,6 +8,8 @@ module Card::Exportable
       title: title,
       board: board.name,
       status: export_status,
+      priority: priority,
+      due_on: due_on&.iso8601,
       creator: export_user(creator),
       description: export_html(description),
       created_at: created_at.iso8601,

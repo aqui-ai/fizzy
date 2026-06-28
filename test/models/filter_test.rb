@@ -71,6 +71,12 @@ class FilterTest < ActiveSupport::TestCase
     assert_equal expected, filter.as_params
   end
 
+  test "turning deadline into params" do
+    filter = users(:david).filters.new deadline: "overdue"
+
+    assert_equal({ deadline: "overdue" }, filter.as_params)
+  end
+
   test "cacheability" do
     assert_not filters(:jz_assignments).cacheable?
     assert users(:david).filters.create!(board_ids: [ boards(:writebook).id ]).cacheable?
@@ -116,6 +122,9 @@ class FilterTest < ActiveSupport::TestCase
 
     filters(:jz_assignments).update!(indexed_by: "stalled", sorted_by: "latest")
     assert_equal "Stalled", filters(:jz_assignments).summary
+
+    filters(:jz_assignments).update!(indexed_by: "all", deadline: "due_today")
+    assert_equal "Due today", filters(:jz_assignments).summary
   end
 
   test "get a clone with some changed params" do
@@ -144,6 +153,34 @@ class FilterTest < ActiveSupport::TestCase
 
     cards(:shipping).closure.update_columns created_at: Time.current
     assert_includes filter.cards, cards(:shipping)
+  end
+
+  test "deadline filters" do
+    travel_to Time.zone.local(2026, 6, 15) do
+      cards(:logo).update!(due_on: Date.current - 1.day)
+      cards(:layout).update!(due_on: Date.current)
+      cards(:text).update!(due_on: Date.current + 3.days)
+      cards(:shipping).update!(due_on: Date.current + 2.weeks)
+      cards(:buy_domain).update!(due_on: nil)
+
+      assert_equal [ cards(:logo) ], users(:david).filters.new(deadline: "overdue").cards.to_a
+      assert_equal [ cards(:layout) ], users(:david).filters.new(deadline: "due_today").cards.to_a
+      assert_equal [ cards(:layout), cards(:text) ].sort_by(&:id), users(:david).filters.new(deadline: "due_soon").cards.to_a.sort_by(&:id)
+      assert_includes users(:david).filters.new(deadline: "no_deadline").cards, cards(:buy_domain)
+      assert_not_includes users(:david).filters.new(deadline: "no_deadline").cards, cards(:logo)
+    end
+  end
+
+  test "deadline sorting" do
+    cards(:logo).update!(due_on: Date.new(2026, 6, 20))
+    cards(:layout).update!(due_on: Date.new(2026, 6, 18))
+    cards(:text).update!(due_on: nil)
+
+    soonest = users(:david).filters.new(card_ids: cards(:logo, :layout, :text).map(&:id), sorted_by: "deadline_soonest").cards.to_a
+    latest = users(:david).filters.new(card_ids: cards(:logo, :layout, :text).map(&:id), sorted_by: "deadline_latest").cards.to_a
+
+    assert_equal [ cards(:layout), cards(:logo), cards(:text) ], soonest
+    assert_equal [ cards(:logo), cards(:layout), cards(:text) ], latest
   end
 
   test "completed by" do

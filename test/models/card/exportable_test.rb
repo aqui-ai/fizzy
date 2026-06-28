@@ -10,6 +10,8 @@ class Card::ExportableTest < ActiveSupport::TestCase
     assert_equal "The logo isn't big enough", json["title"]
     assert_equal "Writebook", json["board"]
     assert_equal "Triage", json["status"]
+    assert_equal card.priority, json["priority"]
+    assert_equal card.due_on.iso8601, json["due_on"]
     assert_equal users(:david).id, json["creator"]["id"]
     assert_equal "David", json["creator"]["name"]
     assert_equal "david@37signals.com", json["creator"]["email"]
