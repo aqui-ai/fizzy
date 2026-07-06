@@ -1,0 +1,39 @@
+@layer components {
+  .integration-events {
+    margin-inline: auto;
+    max-inline-size: min(100ch, 100%);
+    text-align: start;
+  }
+
+  .integration-event__status {
+    border: 1px solid currentColor;
+    border-radius: 2em;
+    font-size: var(--text-x-small);
+    font-weight: 900;
+    line-height: 1;
+    padding: 0.25em 0.6em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .integration-event__status--processed {
+    color: var(--color-positive);
+  }
+
+  .integration-event__status--failed {
+    color: var(--color-negative);
+  }
+
+  .integration-event__status--pending {
+    color: oklch(var(--lch-yellow-dark));
+  }
+
+  .integration-event__status--ignored {
+    color: var(--color-ink-medium);
+  }
+
+  .integration-event__error {
+    color: var(--color-negative);
+    font-size: var(--text-small);
+  }
+}

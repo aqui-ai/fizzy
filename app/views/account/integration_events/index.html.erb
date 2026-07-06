@@ -1,0 +1,40 @@
+<% @page_title = "Integration events" %>
+
+<% content_for :header do %>
+  <div class="header__actions header__actions--start">
+    <%= link_to account_settings_path, class: "btn btn--back btn--circle-mobile" do %>
+      <%= icon_tag "arrow-left" %><strong class="overflow-ellipsis">Settings</strong>
+    <% end %>
+  </div>
+  <h1 class="header__title" data-bridge--title-target="header"><%= @page_title %></h1>
+<% end %>
+
+<div class="integration-events margin-block-start-half">
+  <% if @events.any? %>
+    <div class="panel shadow center overflow-x">
+      <table class="trend-table">
+        <thead>
+          <tr><th>Provider</th><th>Event</th><th>Status</th><th>Received</th><th>Details</th><th></th></tr>
+        </thead>
+        <tbody>
+          <% @events.each do |event| %>
+            <tr>
+              <td><%= event.provider %></td>
+              <td><%= event.event_type %></td>
+              <td><%= integration_event_status_tag event %></td>
+              <td class="txt-nowrap txt-subtle"><%= event.received_at&.strftime("%b %-d, %H:%M") %></td>
+              <td class="integration-event__error"><%= event.error_message %></td>
+              <td>
+                <% if event.failed? %>
+                  <%= button_to "Retry", account_integration_event_retry_path(event), method: :post, class: "btn txt-small" %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="blank-slate">No integration events yet.</div>
+  <% end %>
+</div>

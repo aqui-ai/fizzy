@@ -18,6 +18,10 @@ Rails.application.routes.draw do
       end
       resources :user_links, only: [ :create, :destroy ]
     end
+
+    resources :integration_events, only: :index do
+      resource :retry, only: :create, module: :integration_events
+    end
     resource :entropy
     resource :join_code
     resource :settings

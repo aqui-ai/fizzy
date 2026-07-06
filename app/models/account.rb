@@ -10,6 +10,10 @@ class Account < ApplicationRecord
   has_many :columns, dependent: :destroy
   has_many :entropies, dependent: :destroy
   has_many :report_snapshots, class_name: "Report::Snapshot", dependent: :destroy
+  has_many :integrations, dependent: :destroy
+  has_many :integration_events, dependent: :destroy
+  has_many :external_links, dependent: :destroy
+
   has_one :github_configuration, class_name: "Github::Configuration", dependent: :destroy
   has_many :github_repositories, class_name: "Github::Repository", dependent: :destroy
   has_many :github_user_links, class_name: "Github::UserLink", dependent: :destroy

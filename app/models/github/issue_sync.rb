@@ -56,6 +56,14 @@ class Github::IssueSync
 
       reconcile_assignees issue
       apply_labels issue
+      record_external_link issue
+    end
+
+    def record_external_link(issue)
+      ExternalLink.record(
+        linkable: issue.card, provider: "github", external_type: "issue",
+        external_id: issue.number.to_s, external_url: issue.html_url
+      )
     end
 
     def reconcile_assignees(issue)

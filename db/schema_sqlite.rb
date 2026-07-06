@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_07_06_160000) do
+ActiveRecord::Schema[8.2].define(version: 2026_07_06_170000) do
   create_table "accesses", id: :uuid, force: :cascade do |t|
     t.datetime "accessed_at"
     t.uuid "account_id", null: false
@@ -344,6 +344,21 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_06_160000) do
     t.index ["user_id"], name: "index_exports_on_user_id"
   end
 
+  create_table "external_links", id: :uuid, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.datetime "created_at", null: false
+    t.string "external_id", limit: 255
+    t.string "external_type", limit: 255
+    t.string "external_url", limit: 255
+    t.uuid "linkable_id", null: false
+    t.string "linkable_type", limit: 255, null: false
+    t.json "metadata"
+    t.string "provider", limit: 255, null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "provider", "external_type", "external_id"], name: "index_external_links_on_account_provider_and_external"
+    t.index ["linkable_type", "linkable_id"], name: "index_external_links_on_linkable"
+  end
+
   create_table "filters", id: :uuid, force: :cascade do |t|
     t.uuid "account_id", null: false
     t.datetime "created_at", null: false
@@ -469,6 +484,36 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_06_160000) do
     t.string "token", limit: 255
     t.datetime "updated_at", null: false
     t.index ["identity_id"], name: "index_access_token_on_identity_id"
+  end
+
+  create_table "integration_events", id: :uuid, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.datetime "created_at", null: false
+    t.text "error_message", limit: 65535
+    t.string "event_type", limit: 255
+    t.string "external_id", limit: 255
+    t.datetime "failed_at"
+    t.uuid "integration_id"
+    t.json "payload"
+    t.datetime "processed_at"
+    t.string "provider", limit: 255, null: false
+    t.datetime "received_at"
+    t.string "status", limit: 255, default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "provider", "external_id"], name: "index_integration_events_on_account_provider_external", unique: true
+    t.index ["account_id", "status"], name: "index_integration_events_on_account_and_status"
+  end
+
+  create_table "integrations", id: :uuid, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.datetime "created_at", null: false
+    t.json "credentials"
+    t.boolean "enabled", default: true, null: false
+    t.string "name", limit: 255
+    t.string "provider", limit: 255, null: false
+    t.json "settings"
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "provider"], name: "index_integrations_on_account_and_provider", unique: true
   end
 
   create_table "magic_links", id: :uuid, force: :cascade do |t|

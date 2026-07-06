@@ -5,7 +5,11 @@ class Integrations::Github::WebhooksController < ApplicationController
   before_action :verify_signature
 
   def create
-    Github::ProcessWebhookJob.perform_later(event: event_name, delivery: delivery_id, payload: payload)
+    event = Current.account.integration_events.ingest(
+      provider: "github", event_type: event_name, external_id: delivery_id, payload: payload
+    )
+    Integrations::ProcessEventJob.perform_later(event) if event
+
     head :accepted
   end
 
