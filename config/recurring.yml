@@ -13,6 +13,21 @@ production: &production
   notify_deadlines_due:
     command: "Card.notify_deadlines_due"
     schedule: every hour at minute 10
+  remind_daily_updates_due:
+    command: "DailyUpdate.remind_due"
+    schedule: every day at 09:00
+  remind_daily_updates_missing:
+    command: "DailyUpdate.remind_missing"
+    schedule: every day at 16:30
+  mark_daily_updates_missing:
+    command: "DailyUpdate.mark_missing_due"
+    schedule: every day at 17:00
+  notify_managers_of_missing_daily_updates:
+    command: "DailyUpdate.notify_managers_of_missing_updates"
+    schedule: every day at 17:05
+  capture_report_snapshots:
+    command: "Report::Snapshot.capture_all"
+    schedule: every day at 23:30
   delete_unused_tags:
     class: DeleteUnusedTagsJob
     schedule: every day at 04:02

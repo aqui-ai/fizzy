@@ -1,0 +1,20 @@
+<div class="settings__section">
+  <h2><%= title %></h2>
+
+  <% if data.any? %>
+    <% max = data.values.max %>
+    <ul class="reports__breakdown list-style-none flex flex-column gap">
+      <% data.each do |name, count| %>
+        <li class="flex flex-column gap-half">
+          <div class="flex justify-space-between gap txt-small">
+            <span class="overflow-ellipsis"><%= name %></span>
+            <span class="font-weight-semibold"><%= count %></span>
+          </div>
+          <div class="reports__bar" style="inline-size: <%= max.zero? ? 0 : (count.to_f / max * 100).round %>%"></div>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <div class="blank-slate">No data for this range</div>
+  <% end %>
+</div>

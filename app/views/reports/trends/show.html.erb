@@ -1,0 +1,47 @@
+<% @page_title = "Trends" %>
+
+<% content_for :header do %>
+  <div class="header__actions header__actions--start">
+    <%= link_to reports_path, class: "btn btn--back btn--circle-mobile" do %>
+      <%= icon_tag "arrow-left" %><strong class="overflow-ellipsis">Reports</strong>
+    <% end %>
+  </div>
+  <h1 class="header__title" data-bridge--title-target="header"><%= @page_title %></h1>
+<% end %>
+
+<div class="reports margin-block-start-half">
+  <% if @snapshots.any? %>
+    <div class="settings">
+      <div class="settings__panel panel shadow center">
+        <%= render "reports/trends/chart", title: "Open cards", metric: "open", snapshots: @snapshots %>
+      </div>
+      <div class="settings__panel panel shadow center">
+        <%= render "reports/trends/chart", title: "Closed per day", metric: "closed", tone: "positive", snapshots: @snapshots %>
+      </div>
+    </div>
+
+    <div class="panel shadow center margin-block-start-half">
+      <h2>Daily snapshots</h2>
+      <div class="overflow-x">
+        <table class="trend-table">
+          <thead>
+            <tr><th>Date</th><th>Open</th><th>Overdue</th><th>Created</th><th>Closed</th></tr>
+          </thead>
+          <tbody>
+            <% @snapshots.reverse_each do |snapshot| %>
+              <tr>
+                <td><%= snapshot.snapshot_on.strftime("%b %-d") %></td>
+                <td><%= snapshot.metric("open") %></td>
+                <td><%= snapshot.metric("overdue") %></td>
+                <td><%= snapshot.metric("created") %></td>
+                <td><%= snapshot.metric("closed") %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% else %>
+    <div class="blank-slate">No trend data yet. Snapshots are captured automatically each day.</div>
+  <% end %>
+</div>

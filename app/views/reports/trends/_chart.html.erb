@@ -1,0 +1,13 @@
+<% tone = local_assigns[:tone] %>
+<% max = [ snapshots.map { |snapshot| snapshot.metric(metric) }.max, 1 ].max %>
+
+<div class="settings__section">
+  <h2><%= title %></h2>
+  <div class="trend" role="img" aria-label="<%= title %> over the last <%= snapshots.size %> days">
+    <% snapshots.each do |snapshot| %>
+      <div class="<%= class_names("trend__bar", "trend__bar--positive" => tone == "positive") %>"
+           style="block-size: <%= [ (snapshot.metric(metric).to_f / max * 100).round, 3 ].max %>%"
+           title="<%= snapshot.snapshot_on.strftime("%b %-d") %>: <%= snapshot.metric(metric) %>"></div>
+    <% end %>
+  </div>
+</div>

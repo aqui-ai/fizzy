@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   namespace :account do
     resource :cancellation, only: [ :create ]
+    resource :daily_update_policy, only: :update
     resource :entropy
     resource :join_code
     resource :settings
@@ -108,6 +109,16 @@ Rails.application.routes.draw do
   end
 
   resources :tags, only: :index
+
+  resource :reports, only: :show
+
+  resource :daily_update, only: [ :show, :update ]
+  resources :daily_updates, only: :index
+
+  namespace :reports do
+    resource :daily_performance, only: :show
+    resource :trend, only: :show
+  end
 
   namespace :notifications do
     resource :settings

@@ -1,0 +1,30 @@
+<% @page_title = "Daily update history" %>
+
+<% content_for :header do %>
+  <div class="header__actions header__actions--start">
+    <%= link_to daily_update_path, class: "btn btn--back btn--circle-mobile" do %>
+      <%= icon_tag "arrow-left" %><strong class="overflow-ellipsis">Back to today</strong>
+    <% end %>
+  </div>
+  <h1 class="header__title" data-bridge--title-target="header"><%= @page_title %></h1>
+<% end %>
+
+<div class="daily-update margin-block-start-half">
+  <% if @daily_updates.any? %>
+    <ul class="list-style-none flex flex-column gap">
+      <% @daily_updates.each do |daily_update| %>
+        <li class="panel shadow center flex flex-column gap-half">
+          <div class="flex justify-space-between align-center gap">
+            <strong><%= daily_update.work_on.strftime("%A, %B %-d") %></strong>
+            <%= render "daily_updates/status_badge", daily_update: daily_update %>
+          </div>
+          <% if daily_update.planned_today.present? %>
+            <p class="txt-subtle overflow-line-clamp" style="--lines: 2"><%= daily_update.planned_today %></p>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <div class="blank-slate">No daily updates yet.</div>
+  <% end %>
+</div>

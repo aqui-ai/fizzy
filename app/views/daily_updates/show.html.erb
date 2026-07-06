@@ -1,0 +1,41 @@
+<% @page_title = "Daily update" %>
+
+<% content_for :header do %>
+  <h1 class="header__title" data-bridge--title-target="header"><%= @page_title %></h1>
+  <div class="header__actions header__actions--end">
+    <%= link_to daily_updates_path, class: "btn btn--circle-mobile", aria: { label: "History" } do %>
+      <%= icon_tag "history" %><span class="for-screen-reader">History</span>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="daily-update margin-block-start-half">
+  <div class="panel shadow center">
+    <div class="flex justify-space-between align-center gap">
+      <p class="txt-subtle"><%= Date.current.strftime("%A, %B %-d") %></p>
+      <%= render "daily_updates/status_badge", daily_update: @daily_update unless @daily_update.new_record? %>
+    </div>
+
+    <%= form_with model: @daily_update, url: daily_update_path, method: :patch, data: { controller: "form" } do |form| %>
+      <div class="flex flex-column gap-half margin-block-start">
+        <%= form.label :completed_yesterday, "What did you complete yesterday?", class: "font-weight-semibold" %>
+        <%= form.text_area :completed_yesterday, class: "input", rows: 4 %>
+      </div>
+
+      <div class="flex flex-column gap-half margin-block-start">
+        <%= form.label :planned_today, "What are you working on today?", class: "font-weight-semibold" %>
+        <%= form.text_area :planned_today, class: "input", rows: 4 %>
+      </div>
+
+      <div class="flex flex-column gap-half margin-block-start">
+        <%= form.label :blockers, "What is blocked?", class: "font-weight-semibold" %>
+        <%= form.text_area :blockers, class: "input", rows: 4 %>
+      </div>
+
+      <div class="flex gap margin-block-start">
+        <%= form.button "Save draft", name: "commit", value: "draft", class: "btn" %>
+        <%= form.button "Submit daily update", name: "commit", value: "submit", class: "btn btn--positive flex-1", data: { form_target: "submit" } %>
+      </div>
+    <% end %>
+  </div>
+</div>

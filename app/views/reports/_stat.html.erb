@@ -1,0 +1,8 @@
+<% tone = local_assigns[:tone] %>
+<% unit = local_assigns[:unit] %>
+<div class="kpi-stat panel">
+  <div class="<%= class_names("kpi-stat__value txt-xx-large font-weight-black", "txt-#{tone}" => tone.present?) %>">
+    <%= value %><%= tag.span(unit, class: "kpi-stat__unit txt-large font-weight-normal") if unit %>
+  </div>
+  <div class="kpi-stat__label txt-subtle txt-x-small txt-uppercase"><%= label %></div>
+</div>

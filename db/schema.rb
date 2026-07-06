@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_06_28_121000) do
+ActiveRecord::Schema[8.2].define(version: 2026_07_06_120000) do
   create_table "accesses", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "accessed_at"
     t.uuid "account_id", null: false
@@ -63,6 +63,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_06_28_121000) do
   create_table "accounts", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "cards_count", default: 0, null: false
     t.datetime "created_at", null: false
+    t.integer "daily_update_cutoff_hour", default: 17, null: false
+    t.boolean "daily_update_exclude_weekends", default: true, null: false
     t.bigint "external_account_id"
     t.string "name", null: false
     t.datetime "updated_at", null: false
@@ -285,6 +287,21 @@ ActiveRecord::Schema[8.2].define(version: 2026_06_28_121000) do
     t.index ["filter_id"], name: "index_creators_filters_on_filter_id"
   end
 
+  create_table "daily_updates", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.text "blockers"
+    t.text "completed_yesterday"
+    t.datetime "created_at", null: false
+    t.text "planned_today"
+    t.string "status", default: "draft", null: false
+    t.datetime "submitted_at"
+    t.datetime "updated_at", null: false
+    t.uuid "user_id", null: false
+    t.date "work_on", null: false
+    t.index ["account_id", "user_id", "work_on"], name: "index_daily_updates_on_account_and_user_and_work_on", unique: true
+    t.index ["account_id", "work_on"], name: "index_daily_updates_on_account_id_and_work_on"
+  end
+
   create_table "entropies", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.uuid "account_id", null: false
     t.bigint "auto_postpone_period", default: 2592000, null: false
@@ -458,6 +475,17 @@ ActiveRecord::Schema[8.2].define(version: 2026_06_28_121000) do
     t.index ["account_id"], name: "index_reactions_on_account_id"
     t.index ["reactable_type", "reactable_id"], name: "index_reactions_on_reactable_type_and_reactable_id"
     t.index ["reacter_id"], name: "index_reactions_on_reacter_id"
+  end
+
+  create_table "report_snapshots", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.uuid "board_id"
+    t.datetime "created_at", null: false
+    t.json "metrics"
+    t.date "snapshot_on", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "board_id", "snapshot_on"], name: "index_report_snapshots_on_account_and_board_and_date", unique: true
+    t.index ["account_id", "snapshot_on"], name: "index_report_snapshots_on_account_id_and_snapshot_on"
   end
 
   create_table "search_queries", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

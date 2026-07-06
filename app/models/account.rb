@@ -1,5 +1,5 @@
 class Account < ApplicationRecord
-  include Account::Storage, Cancellable, Entropic, Incineratable, MultiTenantable, Searchable, Seedeable
+  include Account::Storage, Cancellable, DailyUpdatable, Entropic, Incineratable, MultiTenantable, Searchable, Seedeable
 
   has_one :join_code, dependent: :destroy
   has_many :users, dependent: :destroy
@@ -9,6 +9,7 @@ class Account < ApplicationRecord
   has_many :tags, dependent: :destroy
   has_many :columns, dependent: :destroy
   has_many :entropies, dependent: :destroy
+  has_many :report_snapshots, class_name: "Report::Snapshot", dependent: :destroy
   has_many :exports, class_name: "Account::Export", dependent: :destroy
   has_many :imports, class_name: "Account::Import", dependent: :destroy
 

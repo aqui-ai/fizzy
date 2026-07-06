@@ -1,0 +1,6 @@
+<h1 class="title">Your daily update is due today</h1>
+<p class="subtitle">Hi <%= @user.name %>, please post your daily update for <%= @date.strftime("%A, %B %-d") %>.</p>
+
+<p><%= link_to "Submit your daily update", daily_update_url %></p>
+
+<p class="footer">Need help? <%= mail_to "support@fizzy.do", "Send us an email" %>.</p>

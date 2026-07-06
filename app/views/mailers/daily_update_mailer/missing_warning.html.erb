@@ -1,0 +1,6 @@
+<h1 class="title">Your daily update is still missing</h1>
+<p class="subtitle">Hi <%= @user.name %>, you have not submitted your daily update for <%= @date.strftime("%A, %B %-d") %> yet. It is due by <%= Current.account.daily_update_cutoff_hour %>:00.</p>
+
+<p><%= link_to "Submit your daily update", daily_update_url %></p>
+
+<p class="footer">Need help? <%= mail_to "support@fizzy.do", "Send us an email" %>.</p>
