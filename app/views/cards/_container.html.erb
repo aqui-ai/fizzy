@@ -35,13 +35,13 @@
         </footer>
       <% end %>
 
+      <%= render "cards/github", card: card %>
+
       <% if card.entropic? %>
         <%= render "cards/display/preview/bubble", card: card %>
       <% end %>
     </div>
   <% end %>
-
-  <%= render "cards/github", card: card %>
 
   <% if card.published? %>
     <%= render "cards/container/footer/published", card: card %>
