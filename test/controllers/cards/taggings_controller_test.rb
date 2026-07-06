@@ -10,6 +10,16 @@ class Cards::TaggingsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "new lists only the card's board tags" do
+    foreign = boards(:private).tags.create!(title: "foreign-only")
+
+    get new_card_tagging_path(cards(:logo))
+
+    assert_response :success
+    assert_no_match "foreign-only", @response.body
+    assert_match tags(:mobile).title, @response.body
+  end
+
   test "toggle tag on" do
     assert_changes "cards(:logo).tagged_with?(tags(:mobile))", from: false, to: true do
       post card_taggings_path(cards(:logo)), params: { tag_title: tags(:mobile).title }, as: :turbo_stream

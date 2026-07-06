@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_07_06_210000) do
+ActiveRecord::Schema[8.2].define(version: 2026_07_06_220000) do
   create_table "accesses", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "accessed_at"
     t.uuid "account_id", null: false
@@ -901,10 +901,12 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_06_210000) do
 
   create_table "tags", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.uuid "account_id", null: false
+    t.uuid "board_id", null: false
     t.datetime "created_at", null: false
     t.string "title"
     t.datetime "updated_at", null: false
-    t.index ["account_id", "title"], name: "index_tags_on_account_id_and_title", unique: true
+    t.index ["board_id", "title"], name: "index_tags_on_board_id_and_title", unique: true
+    t.index ["board_id"], name: "index_tags_on_board_id"
   end
 
   create_table "user_settings", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

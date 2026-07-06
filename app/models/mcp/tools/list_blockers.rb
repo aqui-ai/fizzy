@@ -4,9 +4,8 @@ class Mcp::Tools::ListBlockers < Mcp::Tool
   end
 
   def call
-    blocked = Current.account.tags.find_by(title: "blocked")
-    return [] unless blocked
-
-    Current.user.accessible_cards.published.active.tagged_with(blocked).map { |card| card_summary(card) }
+    Current.user.accessible_cards.published.active
+      .joins(:tags).where(tags: { title: "blocked" }).distinct
+      .map { |card| card_summary(card) }
   end
 end

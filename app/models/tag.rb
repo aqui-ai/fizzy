@@ -1,11 +1,12 @@
 class Tag < ApplicationRecord
   include Filterable
 
-  belongs_to :account, default: -> { Current.account }
+  belongs_to :board
+  belongs_to :account, default: -> { board.account }
   has_many :taggings, dependent: :destroy
   has_many :cards, through: :taggings
 
-  validates :title, format: { without: /\A#/ }
+  validates :title, format: { without: /\A#/ }, uniqueness: { scope: :board_id }
   normalizes :title, with: -> { it.downcase }
 
   scope :alphabetically, -> { order("lower(title)") }

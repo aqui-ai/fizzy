@@ -39,6 +39,25 @@ class McpWriteToolsTest < ActionDispatch::IntegrationTest
     assert_includes cards(:logo).tags.pluck(:title), "blocked"
   end
 
+  test "mark_blocker tags the card's own board and list_blockers aggregates across boards" do
+    second_board = accounts("37s").boards.create!(name: "Second Board", all_access: true, creator: users(:kevin))
+
+    call_tool("create_card", { board: "Writebook", title: "Blocked A" }, token: @write_token)
+    call_tool("create_card", { board: "Second Board", title: "Blocked B" }, token: @write_token)
+    card_a = boards(:writebook).cards.order(:created_at).last
+    card_b = second_board.cards.order(:created_at).last
+
+    call_tool("mark_blocker", { card_number: card_a.number }, token: @write_token)
+    call_tool("mark_blocker", { card_number: card_b.number }, token: @write_token)
+
+    assert_equal card_a.board, card_a.tags.find_by(title: "blocked").board
+    assert_equal card_b.board, card_b.tags.find_by(title: "blocked").board
+
+    text = call_tool("list_blockers", {}, token: @read_token).dig("result", "content", 0, "text")
+    assert_match card_a.number.to_s, text
+    assert_match card_b.number.to_s, text
+  end
+
   private
     def call_tool(name, arguments, token:)
       post mcp_path,

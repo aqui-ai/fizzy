@@ -36,7 +36,7 @@ class Account::IncineratableTest < ActiveSupport::TestCase
     user.create_settings!(bundle_email_frequency: :never)
 
     # Direct on Account
-    tag = Tag.create!(title: "urgent")
+    tag = board.tags.create!(title: "urgent")
     column = Column.create!(board: board, name: "Test", position: 0)
     export = Account::Export.create!(account: account, user: user)
     search_query = Search::Query.create!(user: user, terms: "test search")

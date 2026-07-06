@@ -78,7 +78,7 @@ class Github::IssueSync
     def apply_labels(issue)
       (Array(issue.labels) + [ "repo:#{repository.name}" ]).each do |label|
         if title = normalize_tag(label)
-          tag = Current.account.tags.find_or_create_by!(title: title)
+          tag = issue.card.board.tags.find_or_create_by!(title: title)
           issue.card.taggings.find_or_create_by!(tag: tag)
         end
       end

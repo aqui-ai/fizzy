@@ -20,13 +20,9 @@ class Mcp::Tools::MarkBlocker < Mcp::Tool
 
   def call
     card = find_card!(arg(:card_number))
-    card.taggings.find_or_create_by!(tag: blocked_tag)
+    tag = card.board.tags.find_or_create_by!(title: "blocked")
+    card.taggings.find_or_create_by!(tag: tag)
     card.comments.create!(body: arg(:reason), creator: Current.user) if arg(:reason).present?
     { card: card.number, blocked: true }
   end
-
-  private
-    def blocked_tag
-      Current.account.tags.find_or_create_by!(title: "blocked")
-    end
 end

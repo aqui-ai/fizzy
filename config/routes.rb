@@ -129,8 +129,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :tags, only: :index
-
   namespace :reports do
     resource :github_report, only: :show
   end

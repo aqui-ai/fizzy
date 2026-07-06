@@ -1,6 +1,6 @@
 class DeleteUnusedTagsJob < ApplicationJob
   def perform
-    Tag.unused.find_each do |tag|
+    Tag.unused.where.not(title: Board::DEFAULT_TAGS).find_each do |tag|
       tag.destroy!
     end
   end

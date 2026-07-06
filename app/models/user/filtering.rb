@@ -21,7 +21,7 @@ class User::Filtering
   end
 
   def tags
-    @tags ||= account.tags.all.alphabetically
+    @tags ||= account.tags.where(board: filter.boards).alphabetically
   end
 
   def users
@@ -53,7 +53,7 @@ class User::Filtering
   end
 
   def show_tags?
-    return unless Tag.any?
+    return unless tags.any?
     filter.tags.any?
   end
 
