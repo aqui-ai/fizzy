@@ -6,7 +6,7 @@ class Github::PullRequestSyncTest < ActiveSupport::TestCase
     Current.account = @account
     Current.user = @account.system_user
     @board = boards(:writebook)
-    @account.create_github_configuration!(in_review_column_name: "Review")
+    @account.integrations.create!(provider: "github", settings: { "in_review_column_name" => "Review" })
     @repo = @account.github_repositories.create!(github_id: 100, full_name: "aqui-ai/core", board: @board)
 
     Github::IssueSync.new(

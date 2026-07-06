@@ -19,7 +19,7 @@ class Integrations::Github::WebhooksController < ApplicationController
     end
 
     def valid_signature?
-      secret = Current.account&.github_configuration&.webhook_secret
+      secret = Current.account&.github_integration&.credential("webhook_secret")
       return false if secret.blank?
 
       expected = "sha256=" + OpenSSL::HMAC.hexdigest("SHA256", secret, request.raw_post)

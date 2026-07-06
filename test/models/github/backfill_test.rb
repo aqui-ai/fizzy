@@ -5,7 +5,7 @@ class Github::BackfillTest < ActiveSupport::TestCase
     @account = accounts("37s")
     Current.account = @account
     Current.user = @account.system_user
-    @account.create_github_configuration!(api_token: "ghp_test")
+    @account.integrations.create!(provider: "github", credentials: { "api_token" => "ghp_test" })
     @repo = @account.github_repositories.create!(github_id: 100, full_name: "aqui-ai/core", name: "core", board: boards(:writebook))
   end
 
@@ -25,7 +25,7 @@ class Github::BackfillTest < ActiveSupport::TestCase
   end
 
   test "does nothing without an API token" do
-    @account.github_configuration.update!(api_token: nil)
+    @account.github_integration.update!(credentials: {})
 
     Github::Backfill.new(@repo).run
 

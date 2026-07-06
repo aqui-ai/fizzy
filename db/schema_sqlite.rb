@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_07_06_170000) do
+ActiveRecord::Schema[8.2].define(version: 2026_07_06_180000) do
   create_table "accesses", id: :uuid, force: :cascade do |t|
     t.datetime "accessed_at"
     t.uuid "account_id", null: false
@@ -387,16 +387,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_06_170000) do
     t.index ["account_id", "github_id"], name: "index_github_comments_on_account_and_github_id", unique: true
     t.index ["comment_id"], name: "index_github_comments_on_comment_id"
     t.index ["issue_id"], name: "index_github_comments_on_issue_id"
-  end
-
-  create_table "github_configurations", id: :uuid, force: :cascade do |t|
-    t.uuid "account_id", null: false
-    t.string "api_token"
-    t.datetime "created_at", null: false
-    t.string "in_review_column_name", limit: 255
-    t.datetime "updated_at", null: false
-    t.string "webhook_secret", limit: 255
-    t.index ["account_id"], name: "index_github_configurations_on_account_id", unique: true
   end
 
   create_table "github_issues", id: :uuid, force: :cascade do |t|

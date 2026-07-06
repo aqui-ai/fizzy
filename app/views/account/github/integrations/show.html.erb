@@ -22,20 +22,20 @@
         <code class="txt-break"><%= integrations_github_webhook_url %></code>
       </p>
 
-      <%= form_with model: @configuration, url: account_github_integration_path, method: :patch, scope: :github_configuration, data: { controller: "form" }, class: "flex flex-column gap" do |form| %>
+      <%= form_with url: account_github_integration_path, method: :patch, scope: :github, data: { controller: "form" }, class: "flex flex-column gap" do |form| %>
         <label class="flex flex-column gap-half">
           <strong>Webhook secret</strong>
           <%= form.password_field :webhook_secret, value: nil, autocomplete: "off", class: "input",
-                placeholder: @configuration.webhook_secret.present? ? "•••••••• (set — leave blank to keep)" : "Enter a secret" %>
+                placeholder: @integration.credential("webhook_secret").present? ? "•••••••• (set — leave blank to keep)" : "Enter a secret" %>
         </label>
         <label class="flex flex-column gap-half">
           <strong>"In review" column name</strong>
-          <%= form.text_field :in_review_column_name, class: "input", placeholder: "In Review" %>
+          <%= form.text_field :in_review_column_name, value: @integration.setting("in_review_column_name"), class: "input", placeholder: "In Review" %>
         </label>
         <label class="flex flex-column gap-half">
           <strong>API token <span class="txt-subtle txt-small">(for backfill)</span></strong>
           <%= form.password_field :api_token, value: nil, autocomplete: "off", class: "input",
-                placeholder: @configuration.api_token.present? ? "•••••••• (set — leave blank to keep)" : "ghp_… (optional)" %>
+                placeholder: @integration.credential("api_token").present? ? "•••••••• (set — leave blank to keep)" : "ghp_… (optional)" %>
         </label>
         <%= form.button "Save", class: "btn btn--link align-self-start", data: { form_target: "submit" } %>
       <% end %>
@@ -59,7 +59,7 @@
                 <label class="flex align-center gap-half txt-small"><%= form.check_box :active %> Active</label>
                 <%= form.button "Save", class: "btn txt-small", data: { form_target: "submit" } %>
               <% end %>
-              <% if repository.syncing? && @configuration.api_token.present? %>
+              <% if repository.syncing? && @integration.credential("api_token").present? %>
                 <%= button_to "Backfill", account_github_repository_backfill_path(repository), method: :post, class: "btn btn--plain txt-small txt-subtle" %>
               <% end %>
             </li>

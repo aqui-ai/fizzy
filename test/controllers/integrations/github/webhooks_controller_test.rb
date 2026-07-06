@@ -3,7 +3,7 @@ require "test_helper"
 class Integrations::Github::WebhooksControllerTest < ActionDispatch::IntegrationTest
   setup do
     @account = accounts("37s")
-    @account.create_github_configuration!(webhook_secret: "s3cr3t")
+    @account.integrations.create!(provider: "github", credentials: { "webhook_secret" => "s3cr3t" })
   end
 
   test "accepts a validly signed webhook, persists an event and enqueues processing" do
@@ -52,7 +52,7 @@ class Integrations::Github::WebhooksControllerTest < ActionDispatch::Integration
   end
 
   test "rejects when no webhook secret is configured" do
-    @account.github_configuration.destroy!
+    @account.github_integration.destroy!
     body = "{}"
 
     post integrations_github_webhook_path, params: body, headers: signed_headers(body, "issues")

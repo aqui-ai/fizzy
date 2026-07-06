@@ -14,7 +14,6 @@ class Account < ApplicationRecord
   has_many :integration_events, dependent: :destroy
   has_many :external_links, dependent: :destroy
 
-  has_one :github_configuration, class_name: "Github::Configuration", dependent: :destroy
   has_many :github_repositories, class_name: "Github::Repository", dependent: :destroy
   has_many :github_user_links, class_name: "Github::UserLink", dependent: :destroy
   has_many :github_comments, class_name: "Github::Comment", dependent: :destroy
@@ -48,6 +47,10 @@ class Account < ApplicationRecord
 
   def system_user
     users.find_by!(role: :system)
+  end
+
+  def github_integration
+    integrations.find_or_initialize_by(provider: "github")
   end
 
   def active?

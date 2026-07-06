@@ -60,6 +60,6 @@ class Github::PullRequestSync
     end
 
     def review_column_name
-      Current.account.github_configuration&.in_review_column_name || "In Review"
+      Current.account.github_integration.setting("in_review_column_name").presence || "In Review"
     end
 end
