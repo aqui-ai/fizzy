@@ -9,8 +9,6 @@ class Account < ApplicationRecord
   has_many :tags, dependent: :destroy
   has_many :columns, dependent: :destroy
   has_many :entropies, dependent: :destroy
-  has_many :teams, dependent: :destroy
-  has_many :team_memberships, dependent: :destroy
   has_many :report_snapshots, class_name: "Report::Snapshot", dependent: :destroy
   has_many :integrations, dependent: :destroy
   has_many :integration_events, dependent: :destroy

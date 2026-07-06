@@ -23,10 +23,6 @@ Rails.application.routes.draw do
       resource :integration, only: [ :show, :update ]
     end
 
-    resources :teams, only: [ :index, :create, :destroy ] do
-      resources :memberships, only: [ :create, :update, :destroy ], module: :teams
-    end
-
     resources :integration_events, only: :index do
       resource :retry, only: :create, module: :integration_events
     end
