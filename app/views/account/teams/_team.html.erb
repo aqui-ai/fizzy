@@ -6,6 +6,9 @@
   </div>
 
   <ul class="team__members list-style-none flex flex-column gap-half">
+    <% if team.memberships.none? %>
+      <li class="txt-subtle txt-small">No one here yet — add someone below and tick <strong>lead</strong> for whoever manages this team.</li>
+    <% end %>
     <% team.memberships.includes(:user).each do |membership| %>
       <li class="flex align-center gap-half flex-wrap">
         <span class="flex-1 overflow-ellipsis"><%= membership.user.name %></span>

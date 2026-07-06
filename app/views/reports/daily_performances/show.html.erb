@@ -10,7 +10,9 @@
 <% end %>
 
 <div class="reports margin-block-start-half">
-  <p class="txt-subtle txt-align-center"><%= @date.strftime("%A, %B %-d") %></p>
+  <p class="txt-subtle txt-align-center">
+    <%= @date.strftime("%A, %B %-d") %> · daily updates and KPI scores for the people you manage
+  </p>
 
   <section class="kpi-stats" aria-label="Compliance summary">
     <%= render "reports/stat", label: "Submitted", value: @submitted.size, tone: "positive" %>
