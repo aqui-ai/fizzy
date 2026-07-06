@@ -13,7 +13,9 @@ Rails.application.routes.draw do
 
     namespace :github do
       resource :integration, only: [ :show, :update ]
-      resources :repositories, only: :update
+      resources :repositories, only: :update do
+        resource :backfill, only: :create
+      end
       resources :user_links, only: [ :create, :destroy ]
     end
     resource :entropy
@@ -130,6 +132,7 @@ Rails.application.routes.draw do
   namespace :reports do
     resource :daily_performance, only: :show
     resource :trend, only: :show
+    resource :github_report, only: :show
   end
 
   namespace :notifications do

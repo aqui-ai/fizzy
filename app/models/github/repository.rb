@@ -18,10 +18,10 @@ class Github::Repository < ApplicationRecord
 
       find_or_initialize_by(github_id: payload["id"]).tap do |repository|
         repository.update!(
-          owner: payload.dig("owner", "login"),
-          name: payload["name"],
+          owner: payload.dig("owner", "login") || repository.owner,
+          name: payload["name"] || repository.name,
           full_name: payload["full_name"].presence || repository.full_name || "repo-#{payload["id"]}",
-          html_url: payload["html_url"]
+          html_url: payload["html_url"] || repository.html_url
         )
       end
     end

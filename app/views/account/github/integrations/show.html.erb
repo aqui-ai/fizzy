@@ -32,6 +32,11 @@
           <strong>"In review" column name</strong>
           <%= form.text_field :in_review_column_name, class: "input", placeholder: "In Review" %>
         </label>
+        <label class="flex flex-column gap-half">
+          <strong>API token <span class="txt-subtle txt-small">(for backfill)</span></strong>
+          <%= form.password_field :api_token, value: nil, autocomplete: "off", class: "input",
+                placeholder: @configuration.api_token.present? ? "•••••••• (set — leave blank to keep)" : "ghp_… (optional)" %>
+        </label>
         <%= form.button "Save", class: "btn btn--link align-self-start", data: { form_target: "submit" } %>
       <% end %>
     </section>
@@ -53,6 +58,9 @@
                 <%= form.collection_select :board_id, @boards, :id, :name, { include_blank: "Not mapped" }, class: "input input--select" %>
                 <label class="flex align-center gap-half txt-small"><%= form.check_box :active %> Active</label>
                 <%= form.button "Save", class: "btn txt-small", data: { form_target: "submit" } %>
+              <% end %>
+              <% if repository.syncing? && @configuration.api_token.present? %>
+                <%= button_to "Backfill", account_github_repository_backfill_path(repository), method: :post, class: "btn btn--plain txt-small txt-subtle" %>
               <% end %>
             </li>
           <% end %>

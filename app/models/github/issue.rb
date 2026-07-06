@@ -4,6 +4,8 @@ class Github::Issue < ApplicationRecord
   belongs_to :board, optional: true
   belongs_to :card, optional: true
 
+  has_many :github_comments, class_name: "Github::Comment", foreign_key: :issue_id, dependent: :destroy
+
   validates :number, uniqueness: { scope: [ :account_id, :repository_id ] }
 
   def open?

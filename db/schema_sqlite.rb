@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_07_06_140000) do
+ActiveRecord::Schema[8.2].define(version: 2026_07_06_160000) do
   create_table "accesses", id: :uuid, force: :cascade do |t|
     t.datetime "accessed_at"
     t.uuid "account_id", null: false
@@ -362,8 +362,21 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_06_140000) do
     t.index ["tag_id"], name: "index_filters_tags_on_tag_id"
   end
 
+  create_table "github_comments", id: :uuid, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.uuid "comment_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "github_id", null: false
+    t.uuid "issue_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "github_id"], name: "index_github_comments_on_account_and_github_id", unique: true
+    t.index ["comment_id"], name: "index_github_comments_on_comment_id"
+    t.index ["issue_id"], name: "index_github_comments_on_issue_id"
+  end
+
   create_table "github_configurations", id: :uuid, force: :cascade do |t|
     t.uuid "account_id", null: false
+    t.string "api_token"
     t.datetime "created_at", null: false
     t.string "in_review_column_name", limit: 255
     t.datetime "updated_at", null: false

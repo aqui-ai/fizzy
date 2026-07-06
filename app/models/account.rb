@@ -13,6 +13,7 @@ class Account < ApplicationRecord
   has_one :github_configuration, class_name: "Github::Configuration", dependent: :destroy
   has_many :github_repositories, class_name: "Github::Repository", dependent: :destroy
   has_many :github_user_links, class_name: "Github::UserLink", dependent: :destroy
+  has_many :github_comments, class_name: "Github::Comment", dependent: :destroy
   has_many :exports, class_name: "Account::Export", dependent: :destroy
   has_many :imports, class_name: "Account::Import", dependent: :destroy
 

@@ -47,6 +47,41 @@ class Github::IssueSync
       when "edited", "assigned", "unassigned", "labeled", "unlabeled"
         sync_title issue
       end
+
+      enrich issue
+    end
+
+    def enrich(issue)
+      return unless issue.card
+
+      reconcile_assignees issue
+      apply_labels issue
+    end
+
+    def reconcile_assignees(issue)
+      desired = issue.assignees.filter_map { |login| user_links.user_for(login) }
+      managed = user_links.includes(:user).map(&:user)
+      assigned = issue.card.assignees.to_a
+
+      (desired - assigned).each { |user| issue.card.toggle_assignment(user) }
+      ((assigned & managed) - desired).each { |user| issue.card.toggle_assignment(user) }
+    end
+
+    def apply_labels(issue)
+      (Array(issue.labels) + [ "repo:#{repository.name}" ]).each do |label|
+        if title = normalize_tag(label)
+          tag = Current.account.tags.find_or_create_by!(title: title)
+          issue.card.taggings.find_or_create_by!(tag: tag)
+        end
+      end
+    end
+
+    def normalize_tag(label)
+      label.to_s.downcase.sub(/\A#+/, "").strip.presence
+    end
+
+    def user_links
+      Current.account.github_user_links
     end
 
     def link_card(issue)

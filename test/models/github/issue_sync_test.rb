@@ -6,7 +6,42 @@ class Github::IssueSyncTest < ActiveSupport::TestCase
     Current.account = @account
     Current.user = @account.system_user
     @board = boards(:writebook)
-    @repo = @account.github_repositories.create!(github_id: 100, full_name: "aqui-ai/core", board: @board)
+    @repo = @account.github_repositories.create!(github_id: 100, full_name: "aqui-ai/core", name: "core", board: @board)
+  end
+
+  test "applies GitHub labels as tags plus a repo tag" do
+    Github::IssueSync.new(
+      "action" => "opened",
+      "issue" => { "id" => 60, "number" => 6, "title" => "T", "state" => "open",
+                   "labels" => [ { "name" => "Bug" }, { "name" => "urgent" } ], "assignees" => [] },
+      "repository" => { "id" => 100 }
+    ).process
+
+    titles = @repo.issues.find_by(number: 6).card.tags.pluck(:title)
+    assert_includes titles, "bug"
+    assert_includes titles, "urgent"
+    assert_includes titles, "repo:core"
+  end
+
+  test "assigns mapped GitHub users to the card" do
+    @account.github_user_links.create!(github_login: "dhh", user: users(:david))
+
+    assignees_sync 6, [ "dhh" ]
+
+    assert_includes @repo.issues.find_by(number: 6).card.assignees, users(:david)
+  end
+
+  test "unassigning in GitHub removes only github-managed assignees" do
+    @account.github_user_links.create!(github_login: "dhh", user: users(:david))
+    assignees_sync 6, [ "dhh" ]
+    card = @repo.issues.find_by(number: 6).card
+    card.toggle_assignment(users(:jz)) # a Fizzy-only assignee, no GitHub link
+
+    assignees_sync 6, []
+
+    card.reload
+    assert_not_includes card.assignees, users(:david)
+    assert_includes card.assignees, users(:jz)
   end
 
   test "opened creates and links a card in the mapped board" do
@@ -70,6 +105,16 @@ class Github::IssueSyncTest < ActiveSupport::TestCase
   end
 
   private
+    def assignees_sync(number, logins)
+      action = @repo.issues.exists?(number: number) ? "assigned" : "opened"
+      Github::IssueSync.new(
+        "action" => action,
+        "issue" => { "id" => number * 10, "number" => number, "title" => "T", "state" => "open",
+                     "labels" => [], "assignees" => logins.map { |login| { "login" => login } } },
+        "repository" => { "id" => 100 }
+      ).process
+    end
+
     def sync(action, number:, title:, state:)
       Github::IssueSync.new(
         "action" => action,

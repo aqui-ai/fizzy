@@ -12,6 +12,7 @@ class Account::Github::IntegrationsController < ApplicationController
   def update
     attributes = configuration_params
     attributes.delete(:webhook_secret) if attributes[:webhook_secret].blank?
+    attributes.delete(:api_token) if attributes[:api_token].blank?
     configuration.update!(attributes)
 
     redirect_to account_github_integration_path, notice: "GitHub settings saved"
@@ -23,6 +24,6 @@ class Account::Github::IntegrationsController < ApplicationController
     end
 
     def configuration_params
-      params.expect(github_configuration: [ :webhook_secret, :in_review_column_name ])
+      params.expect(github_configuration: [ :webhook_secret, :in_review_column_name, :api_token ])
     end
 end

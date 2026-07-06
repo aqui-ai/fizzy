@@ -1,0 +1,28 @@
+<% @page_title = "Engineering" %>
+
+<% content_for :header do %>
+  <div class="header__actions header__actions--start">
+    <%= link_to reports_path, class: "btn btn--back btn--circle-mobile" do %>
+      <%= icon_tag "arrow-left" %><strong class="overflow-ellipsis">Reports</strong>
+    <% end %>
+  </div>
+  <h1 class="header__title" data-bridge--title-target="header"><%= @page_title %></h1>
+<% end %>
+
+<div class="reports margin-block-start-half">
+  <section class="kpi-stats" aria-label="GitHub metrics">
+    <%= render "reports/stat", label: "Open PRs", value: @report.open_pull_requests %>
+    <%= render "reports/stat", label: "In review", value: @report.in_review %>
+    <%= render "reports/stat", label: "Merged this week", value: @report.merged_this_week, tone: "positive" %>
+    <%= render "reports/stat", label: "Linked repos", value: @report.linked_repositories %>
+  </section>
+
+  <div class="settings margin-block-start-half">
+    <div class="settings__panel panel shadow center">
+      <%= render "reports/breakdown", title: "Open cards by repository", data: @report.open_cards_by_repository %>
+    </div>
+    <div class="settings__panel panel shadow center">
+      <%= render "reports/breakdown", title: "Closed cards by repository", data: @report.closed_cards_by_repository %>
+    </div>
+  </div>
+</div>
