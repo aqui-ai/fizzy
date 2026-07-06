@@ -1,0 +1,34 @@
+<% @page_title = "Discord" %>
+
+<% content_for :header do %>
+  <div class="header__actions header__actions--start">
+    <%= link_to account_settings_path, class: "btn btn--back btn--circle-mobile" do %>
+      <%= icon_tag "arrow-left" %><strong class="overflow-ellipsis">Settings</strong>
+    <% end %>
+  </div>
+  <h1 class="header__title" data-bridge--title-target="header">Discord</h1>
+<% end %>
+
+<div class="settings margin-block-start-half">
+  <div class="settings__panel panel shadow center">
+    <section class="settings__section">
+      <header>
+        <h2 class="divider">Channel webhook</h2>
+        <div>Create a Discord channel webhook and paste its URL here. Fizzy posts the daily standup summary (missing updates and overdue cards) to that channel.</div>
+      </header>
+
+      <%= form_with url: account_discord_integration_path, method: :patch, scope: :discord, data: { controller: "form" }, class: "flex flex-column gap" do |form| %>
+        <label class="flex flex-column gap-half">
+          <strong>Webhook URL</strong>
+          <%= form.password_field :webhook_url, value: nil, autocomplete: "off", class: "input",
+                placeholder: @integration.credential("webhook_url").present? ? "•••••••• (set — leave blank to keep)" : "https://discord.com/api/webhooks/…" %>
+        </label>
+        <label class="flex align-center gap-half">
+          <%= form.check_box :enabled, { checked: @integration.enabled? }, "1", "0" %>
+          <span>Post summaries to Discord</span>
+        </label>
+        <%= form.button "Save", class: "btn btn--link align-self-start", data: { form_target: "submit" } %>
+      <% end %>
+    </section>
+  </div>
+</div>

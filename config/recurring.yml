@@ -28,6 +28,9 @@ production: &production
   capture_report_snapshots:
     command: "Report::Snapshot.capture_all"
     schedule: every day at 23:30
+  post_discord_daily_summary:
+    command: "Discord::DailySummary.post_all"
+    schedule: every day at 17:10
   delete_unused_tags:
     class: DeleteUnusedTagsJob
     schedule: every day at 04:02

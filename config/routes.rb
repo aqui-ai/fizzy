@@ -19,6 +19,10 @@ Rails.application.routes.draw do
       resources :user_links, only: [ :create, :destroy ]
     end
 
+    namespace :discord do
+      resource :integration, only: [ :show, :update ]
+    end
+
     resources :integration_events, only: :index do
       resource :retry, only: :create, module: :integration_events
     end

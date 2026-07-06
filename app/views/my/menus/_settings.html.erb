@@ -6,6 +6,7 @@
   <%= filter_place_menu_item daily_update_path, "Daily update", "clipboard" %>
   <%= filter_place_menu_item account_settings_path, "Account Settings", "settings" %>
   <%= filter_place_menu_item account_github_integration_path, "GitHub", "globe" if Current.user.admin? %>
+  <%= filter_place_menu_item account_discord_integration_path, "Discord", "comment" if Current.user.admin? %>
   <%= filter_place_menu_item account_integration_events_path, "Integration events", "history" if Current.user.admin? %>
   <%= filter_place_menu_item user_path(Current.user), "My Profile", "person" %>
   <%= filter_place_menu_item notifications_path, "All notifications", "bell" %>
