@@ -25,21 +25,5 @@
           data: { action: "lexxy:change->auto-save#change focusout->auto-save#submit" } do %>
       <%= general_prompts(card.board) %>
     <% end %>
-
-    <div class="card__deadline-field" data-controller="deadline">
-      <%= form.label :due_on, "Deadline", class: "txt-small txt-uppercase translucent" %>
-      <%= form.date_field :due_on, class: "input", data: { deadline_target: "input", action: "auto-save#change blur->auto-save#submit" } %>
-      <div class="card__deadline-shortcuts flex gap-half flex-wrap">
-        <%= card_deadline_shortcut_button "Today", days: 0 %>
-        <%= card_deadline_shortcut_button "Tomorrow", days: 1 %>
-        <%= card_deadline_shortcut_button "Next week", days: 7 %>
-        <%= card_deadline_shortcut_button "Clear", clear: true %>
-      </div>
-    </div>
-
-    <div class="card__priority-field">
-      <%= form.label :priority, "Priority", class: "txt-small txt-uppercase translucent" %>
-      <%= form.select :priority, Card.priority_options, {}, class: "input input--select", data: { action: "auto-save#change blur->auto-save#submit" } %>
-    </div>
   <% end %>
 <% end %>

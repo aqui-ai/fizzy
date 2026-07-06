@@ -48,14 +48,6 @@ module CardsHelper
     )
   end
 
-  def card_deadline_shortcut_button(label, days: nil, clear: false)
-    action = clear ? "deadline#clear" : "deadline#set"
-    data = { action: action }
-    data[:deadline_days_value] = days unless clear
-
-    button_tag label, type: "button", class: "btn txt-x-small", data: data
-  end
-
   def card_deadline_status(card)
     case card.due_on
     when ...Date.current

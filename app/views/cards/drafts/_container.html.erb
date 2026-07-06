@@ -9,6 +9,9 @@
         <header class="card__header">
           <%= render "cards/display/perma/board", card: card %>
           <%= render "cards/display/perma/tags", card: card %>
+          <div id="<%= dom_id(card, :badges) %>">
+            <%= render "cards/display/common/badge_controls", card: card, form_id: "card_form" %>
+          </div>
         </header>
 
         <div class="card__body justify-space-between">
