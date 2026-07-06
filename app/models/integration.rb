@@ -1,4 +1,7 @@
 class Integration < ApplicationRecord
+  serialize :credentials, coder: JSON, type: Hash
+  encrypts :credentials
+
   belongs_to :account
   has_many :integration_events, dependent: :nullify
 
