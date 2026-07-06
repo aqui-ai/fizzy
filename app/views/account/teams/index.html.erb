@@ -1,0 +1,45 @@
+<% @page_title = "Teams" %>
+
+<% content_for :header do %>
+  <div class="header__actions header__actions--start">
+    <%= link_to account_settings_path, class: "btn btn--back btn--circle-mobile" do %>
+      <%= icon_tag "arrow-left" %><strong class="overflow-ellipsis">Settings</strong>
+    <% end %>
+  </div>
+  <h1 class="header__title" data-bridge--title-target="header">Teams</h1>
+<% end %>
+
+<div class="settings margin-block-start-half">
+  <div class="settings__panel panel shadow center">
+    <section class="settings__section">
+      <header>
+        <h2 class="divider">New team</h2>
+        <div>Create a team, or nest it under a parent to model your org (company → department → team). Team leads see their team and everything below it.</div>
+      </header>
+
+      <%= form_with url: account_teams_path, scope: :team, data: { controller: "form" }, class: "flex flex-column gap" do |form| %>
+        <%= form.text_field :name, placeholder: "Team name", required: true, class: "input" %>
+        <%= form.collection_select :parent_id, @all_teams, :id, :name, { include_blank: "Top level (no parent)" }, class: "input input--select" %>
+        <%= form.button "Create team", class: "btn btn--link align-self-start", data: { form_target: "submit" } %>
+      <% end %>
+    </section>
+  </div>
+
+  <div class="settings__panel panel shadow center">
+    <section class="settings__section">
+      <header>
+        <h2 class="divider">Structure</h2>
+      </header>
+
+      <% if @teams.any? %>
+        <ul class="team-tree list-style-none flex flex-column gap">
+          <% @teams.each do |team| %>
+            <%= render "account/teams/team", team: team %>
+          <% end %>
+        </ul>
+      <% else %>
+        <div class="blank-slate">No teams yet.</div>
+      <% end %>
+    </section>
+  </div>
+</div>

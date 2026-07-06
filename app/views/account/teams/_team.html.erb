@@ -1,0 +1,33 @@
+<li class="team">
+  <div class="team__header flex align-center justify-space-between gap">
+    <strong><%= team.name %></strong>
+    <%= button_to "Delete", account_team_path(team), method: :delete, class: "btn btn--remove txt-x-small",
+          form: { data: { turbo_confirm: "Delete #{team.name} and any subteams?" } } %>
+  </div>
+
+  <ul class="team__members list-style-none flex flex-column gap-half">
+    <% team.memberships.includes(:user).each do |membership| %>
+      <li class="flex align-center gap-half flex-wrap">
+        <span class="flex-1 overflow-ellipsis"><%= membership.user.name %></span>
+        <% if membership.lead %><span class="team-lead-badge">Lead</span><% end %>
+        <%= button_to (membership.lead ? "Unset lead" : "Make lead"), account_team_membership_path(team, membership),
+              method: :patch, params: { team_membership: { lead: membership.lead ? "0" : "1" } }, class: "btn btn--plain txt-x-small txt-subtle" %>
+        <%= button_to "Remove", account_team_membership_path(team, membership), method: :delete, class: "btn btn--remove txt-x-small" %>
+      </li>
+    <% end %>
+  </ul>
+
+  <%= form_with url: account_team_memberships_path(team), scope: :team_membership, data: { controller: "form" }, class: "flex align-center gap-half flex-wrap" do |form| %>
+    <%= form.collection_select :user_id, @users, :id, :name, { include_blank: "Add member…" }, class: "input input--select txt-small" %>
+    <label class="flex align-center gap-half txt-small"><%= form.check_box :lead %> lead</label>
+    <%= form.button "Add", class: "btn txt-small", data: { form_target: "submit" } %>
+  <% end %>
+
+  <% if team.children.any? %>
+    <ul class="team__children list-style-none">
+      <% team.children.order(:name).each do |child| %>
+        <%= render "account/teams/team", team: child %>
+      <% end %>
+    </ul>
+  <% end %>
+</li>
