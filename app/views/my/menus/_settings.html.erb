@@ -2,7 +2,7 @@
   <%= filter_place_menu_item reports_path, "Reports", "grid" if Current.user.admin? %>
   <%= filter_place_menu_item reports_trend_path, "Trends", "activity" if Current.user.admin? %>
   <%= filter_place_menu_item reports_github_report_path, "Engineering", "bolt" if Current.user.admin? %>
-  <%= filter_place_menu_item reports_daily_performance_path, "Daily performance", "crown" if Current.user.admin? %>
+  <%= filter_place_menu_item reports_daily_performance_path, "Daily performance", "crown" if Current.user.manages_accountability? %>
   <%= filter_place_menu_item daily_update_path, "Daily update", "clipboard" %>
   <%= filter_place_menu_item account_settings_path, "Account Settings", "settings" %>
   <%= filter_place_menu_item account_github_integration_path, "GitHub", "globe" if Current.user.admin? %>

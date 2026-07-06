@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_07_06_190000) do
+ActiveRecord::Schema[8.2].define(version: 2026_07_06_200000) do
   create_table "accesses", id: :uuid, force: :cascade do |t|
     t.datetime "accessed_at"
     t.uuid "account_id", null: false
@@ -706,6 +706,27 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_06_190000) do
     t.string "title", limit: 255
     t.datetime "updated_at", null: false
     t.index ["account_id", "title"], name: "index_tags_on_account_id_and_title", unique: true
+  end
+
+  create_table "team_memberships", id: :uuid, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.datetime "created_at", null: false
+    t.boolean "lead", default: false, null: false
+    t.uuid "team_id", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "user_id", null: false
+    t.index ["team_id", "user_id"], name: "index_team_memberships_on_team_and_user", unique: true
+    t.index ["user_id"], name: "index_team_memberships_on_user_id"
+  end
+
+  create_table "teams", id: :uuid, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.datetime "created_at", null: false
+    t.string "name", limit: 255, null: false
+    t.uuid "parent_id"
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_teams_on_account_id"
+    t.index ["parent_id"], name: "index_teams_on_parent_id"
   end
 
   create_table "user_settings", id: :uuid, force: :cascade do |t|

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_07_06_190000) do
+ActiveRecord::Schema[8.2].define(version: 2026_07_06_200000) do
   create_table "accesses", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "accessed_at"
     t.uuid "account_id", null: false
@@ -945,6 +945,27 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_06_190000) do
     t.index ["account_id"], name: "index_user_settings_on_account_id"
     t.index ["user_id", "bundle_email_frequency"], name: "index_user_settings_on_user_id_and_bundle_email_frequency"
     t.index ["user_id"], name: "index_user_settings_on_user_id"
+  end
+
+  create_table "team_memberships", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.datetime "created_at", null: false
+    t.boolean "lead", default: false, null: false
+    t.uuid "team_id", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "user_id", null: false
+    t.index ["team_id", "user_id"], name: "index_team_memberships_on_team_and_user", unique: true
+    t.index ["user_id"], name: "index_team_memberships_on_user_id"
+  end
+
+  create_table "teams", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.uuid "parent_id"
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_teams_on_account_id"
+    t.index ["parent_id"], name: "index_teams_on_parent_id"
   end
 
   create_table "users", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
