@@ -155,6 +155,8 @@ Rails.application.routes.draw do
     end
   end
 
+  post "/mcp", to: "mcp#handle", as: :mcp
+
   resource :search
   namespace :searches do
     resources :queries
