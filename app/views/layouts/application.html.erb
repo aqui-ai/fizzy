@@ -21,7 +21,6 @@
       <%= render "layouts/shared/time_zone" if Current.user %>
 
       <main id="main">
-        <%= render "daily_updates/reminder_banner" if Current.user %>
         <%= yield %>
       </main>
     </div>

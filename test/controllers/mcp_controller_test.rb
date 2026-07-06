@@ -22,8 +22,8 @@ class McpControllerTest < ActionDispatch::IntegrationTest
     names = rpc("tools/list").dig("result", "tools").map { |tool| tool["name"] }
 
     assert_includes names, "list_boards"
-    assert_includes names, "daily_update_compliance"
-    assert_includes names, "kpi_summary"
+    assert_includes names, "list_overdue"
+    assert_includes names, "create_card"
   end
 
   test "tools/call runs a read tool" do

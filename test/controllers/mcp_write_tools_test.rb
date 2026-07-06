@@ -27,12 +27,10 @@ class McpWriteToolsTest < ActionDispatch::IntegrationTest
     assert_equal users(:kevin), cards(:logo).comments.order(:created_at).last.creator
   end
 
-  test "submit_daily_update submits for the token user" do
-    call_tool("submit_daily_update", { planned: "Ship MCP" }, token: @write_token)
+  test "assign_card assigns the card to the token user" do
+    call_tool("assign_card", { card_number: cards(:logo).number }, token: @write_token)
 
-    update = users(:kevin).daily_updates.for_date(Date.current).first
-    assert_not_nil update
-    assert_not update.draft?
+    assert cards(:logo).assigned_to?(users(:kevin))
   end
 
   test "mark_blocker tags the card blocked" do

@@ -1,9 +1,0 @@
-<%= @users.size %> missing daily <%= "update".pluralize(@users.size) %>
-
-These people have not submitted their daily update for <%= @date.strftime("%A, %B %-d") %>:
-
-<% @users.each do |user| -%>
-- <%= user.name %>
-<% end -%>
-
-Open the daily performance dashboard: <%= reports_daily_performance_url %>

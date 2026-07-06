@@ -5,12 +5,9 @@ module Mcp::Registry
       Mcp::Tools::ListCards,
       Mcp::Tools::ListOverdue,
       Mcp::Tools::ListBlockers,
-      Mcp::Tools::DailyUpdateCompliance,
-      Mcp::Tools::KpiSummary,
       Mcp::Tools::CreateCard,
       Mcp::Tools::CommentOnCard,
       Mcp::Tools::AssignCard,
-      Mcp::Tools::SubmitDailyUpdate,
       Mcp::Tools::MarkBlocker
     ]
   end

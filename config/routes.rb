@@ -9,7 +9,6 @@ Rails.application.routes.draw do
 
   namespace :account do
     resource :cancellation, only: [ :create ]
-    resource :daily_update_policy, only: :update
 
     namespace :github do
       resource :integration, only: [ :show, :update ]
@@ -132,14 +131,7 @@ Rails.application.routes.draw do
 
   resources :tags, only: :index
 
-  resource :reports, only: :show
-
-  resource :daily_update, only: [ :show, :update ]
-  resources :daily_updates, only: :index
-
   namespace :reports do
-    resource :daily_performance, only: :show
-    resource :trend, only: :show
     resource :github_report, only: :show
   end
 
