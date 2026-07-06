@@ -41,6 +41,8 @@
     </div>
   <% end %>
 
+  <%= render "cards/github", card: card %>
+
   <% if card.published? %>
     <%= render "cards/container/footer/published", card: card %>
   <% end %>

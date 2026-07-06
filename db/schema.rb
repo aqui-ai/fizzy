@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_07_06_120000) do
+ActiveRecord::Schema[8.2].define(version: 2026_07_06_140000) do
   create_table "accesses", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "accessed_at"
     t.uuid "account_id", null: false
@@ -360,6 +360,84 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_06_120000) do
     t.uuid "tag_id", null: false
     t.index ["filter_id"], name: "index_filters_tags_on_filter_id"
     t.index ["tag_id"], name: "index_filters_tags_on_tag_id"
+  end
+
+  create_table "github_configurations", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.datetime "created_at", null: false
+    t.string "in_review_column_name"
+    t.datetime "updated_at", null: false
+    t.string "webhook_secret"
+    t.index ["account_id"], name: "index_github_configurations_on_account_id", unique: true
+  end
+
+  create_table "github_issues", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.json "assignees"
+    t.uuid "board_id"
+    t.text "body"
+    t.uuid "card_id"
+    t.datetime "closed_at"
+    t.datetime "created_at", null: false
+    t.bigint "github_id", null: false
+    t.string "html_url"
+    t.json "labels"
+    t.datetime "last_synced_at"
+    t.integer "number", null: false
+    t.datetime "opened_at"
+    t.uuid "repository_id", null: false
+    t.string "state"
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "card_id"], name: "index_github_issues_on_account_and_card_id"
+    t.index ["account_id", "repository_id", "number"], name: "index_github_issues_on_account_repo_number", unique: true
+    t.index ["repository_id"], name: "index_github_issues_on_repository_id"
+  end
+
+  create_table "github_pull_requests", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.uuid "board_id"
+    t.uuid "card_id"
+    t.datetime "created_at", null: false
+    t.bigint "github_id", null: false
+    t.string "head_ref"
+    t.string "html_url"
+    t.datetime "last_synced_at"
+    t.boolean "merged", default: false, null: false
+    t.datetime "merged_at"
+    t.integer "number", null: false
+    t.uuid "repository_id", null: false
+    t.string "state"
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "repository_id", "number"], name: "index_github_pull_requests_on_account_repo_number", unique: true
+    t.index ["repository_id"], name: "index_github_pull_requests_on_repository_id"
+  end
+
+  create_table "github_repositories", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.boolean "active", default: true, null: false
+    t.uuid "board_id"
+    t.datetime "created_at", null: false
+    t.string "full_name", null: false
+    t.bigint "github_id", null: false
+    t.string "html_url"
+    t.string "name"
+    t.string "owner"
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "full_name"], name: "index_github_repositories_on_account_and_full_name", unique: true
+    t.index ["account_id", "github_id"], name: "index_github_repositories_on_account_and_github_id", unique: true
+  end
+
+  create_table "github_user_links", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "github_id"
+    t.string "github_login", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "user_id", null: false
+    t.index ["account_id", "github_login"], name: "index_github_user_links_on_account_and_login", unique: true
+    t.index ["user_id"], name: "index_github_user_links_on_user_id"
   end
 
   create_table "identities", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

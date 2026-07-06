@@ -1,0 +1,85 @@
+<% @page_title = "GitHub" %>
+
+<% content_for :header do %>
+  <div class="header__actions header__actions--start">
+    <%= link_to account_settings_path, class: "btn btn--back btn--circle-mobile" do %>
+      <%= icon_tag "arrow-left" %><strong class="overflow-ellipsis">Settings</strong>
+    <% end %>
+  </div>
+  <h1 class="header__title" data-bridge--title-target="header">GitHub</h1>
+<% end %>
+
+<div class="settings margin-block-start-half">
+  <div class="settings__panel panel shadow center">
+    <section class="settings__section">
+      <header>
+        <h2 class="divider">Webhook</h2>
+        <div>Add this URL as a GitHub webhook (content type <code>application/json</code>), then paste the same secret here.</div>
+      </header>
+
+      <p class="txt-small">
+        <strong>Payload URL</strong><br>
+        <code class="txt-break"><%= integrations_github_webhook_url %></code>
+      </p>
+
+      <%= form_with model: @configuration, url: account_github_integration_path, method: :patch, scope: :github_configuration, data: { controller: "form" }, class: "flex flex-column gap" do |form| %>
+        <label class="flex flex-column gap-half">
+          <strong>Webhook secret</strong>
+          <%= form.password_field :webhook_secret, value: nil, autocomplete: "off", class: "input",
+                placeholder: @configuration.webhook_secret.present? ? "•••••••• (set — leave blank to keep)" : "Enter a secret" %>
+        </label>
+        <label class="flex flex-column gap-half">
+          <strong>"In review" column name</strong>
+          <%= form.text_field :in_review_column_name, class: "input", placeholder: "In Review" %>
+        </label>
+        <%= form.button "Save", class: "btn btn--link align-self-start", data: { form_target: "submit" } %>
+      <% end %>
+    </section>
+  </div>
+
+  <div class="settings__panel panel shadow center">
+    <section class="settings__section">
+      <header>
+        <h2 class="divider">Repositories</h2>
+        <div>Repositories appear here after their first webhook. Map one to a board to start creating cards.</div>
+      </header>
+
+      <% if @repositories.any? %>
+        <ul class="list-style-none flex flex-column gap">
+          <% @repositories.each do |repository| %>
+            <li>
+              <%= form_with model: repository, url: account_github_repository_path(repository), method: :patch, scope: :github_repository, data: { controller: "form" }, class: "flex align-center gap-half flex-wrap" do |form| %>
+                <strong class="flex-1 overflow-ellipsis"><%= repository.full_name %></strong>
+                <%= form.collection_select :board_id, @boards, :id, :name, { include_blank: "Not mapped" }, class: "input input--select" %>
+                <label class="flex align-center gap-half txt-small"><%= form.check_box :active %> Active</label>
+                <%= form.button "Save", class: "btn txt-small", data: { form_target: "submit" } %>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <div class="blank-slate">No repositories yet.</div>
+      <% end %>
+    </section>
+
+    <section class="settings__section">
+      <header>
+        <h2 class="divider">People</h2>
+        <div>Map GitHub usernames to Fizzy users so actions are attributed correctly.</div>
+      </header>
+
+      <% @user_links.each do |link| %>
+        <div class="flex align-center gap-half justify-space-between">
+          <span><code><%= link.github_login %></code> → <%= link.user.name %></span>
+          <%= button_to "Remove", account_github_user_link_path(link), method: :delete, class: "btn btn--remove txt-small" %>
+        </div>
+      <% end %>
+
+      <%= form_with url: account_github_user_links_path, scope: :github_user_link, data: { controller: "form" }, class: "flex align-center gap-half flex-wrap margin-block-start-half" do |form| %>
+        <%= form.text_field :github_login, placeholder: "github-username", class: "input flex-1" %>
+        <%= form.collection_select :user_id, @users, :id, :name, { include_blank: "Select user" }, class: "input input--select" %>
+        <%= form.button "Link", class: "btn btn--link txt-small", data: { form_target: "submit" } %>
+      <% end %>
+    </section>
+  </div>
+</div>

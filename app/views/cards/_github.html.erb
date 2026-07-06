@@ -1,0 +1,19 @@
+<% if card.github_linked? %>
+  <div class="card-github panel">
+    <h3 class="card-github__label txt-x-small txt-uppercase txt-subtle">GitHub</h3>
+
+    <% if issue = card.github_issue %>
+      <div class="card-github__row">
+        <%= link_to "#{issue.repository.full_name}##{issue.number}", issue.html_url, class: "txt-link overflow-ellipsis", target: "_blank", rel: "noopener" %>
+        <%= github_state_tag issue.state %>
+      </div>
+    <% end %>
+
+    <% card.github_pull_requests.order(:number).each do |pull_request| %>
+      <div class="card-github__row">
+        <%= link_to "PR ##{pull_request.number}", pull_request.html_url, class: "txt-link overflow-ellipsis", target: "_blank", rel: "noopener" %>
+        <%= github_state_tag github_pull_request_state(pull_request) %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

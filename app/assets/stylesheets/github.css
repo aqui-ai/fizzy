@@ -1,0 +1,45 @@
+@layer components {
+  .card-github {
+    --panel-size: auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--block-space-half);
+    margin-block-start: var(--block-space);
+    text-align: start;
+  }
+
+  .card-github__label {
+    letter-spacing: 0.06em;
+  }
+
+  .card-github__row {
+    align-items: center;
+    display: flex;
+    gap: var(--inline-space);
+    justify-content: space-between;
+  }
+
+  .github-state {
+    border: 1px solid currentColor;
+    border-radius: 2em;
+    flex: none;
+    font-size: var(--text-x-small);
+    font-weight: 900;
+    line-height: 1;
+    padding: 0.25em 0.6em;
+    text-transform: uppercase;
+  }
+
+  .github-state--open {
+    color: var(--color-positive);
+  }
+
+  .github-state--closed {
+    color: var(--color-negative);
+  }
+
+  .github-state--merged {
+    color: oklch(var(--lch-purple-dark));
+  }
+}

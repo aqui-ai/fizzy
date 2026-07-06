@@ -1,9 +1,21 @@
 Rails.application.routes.draw do
   root "events#index"
 
+  namespace :integrations do
+    namespace :github do
+      resource :webhook, only: :create
+    end
+  end
+
   namespace :account do
     resource :cancellation, only: [ :create ]
     resource :daily_update_policy, only: :update
+
+    namespace :github do
+      resource :integration, only: [ :show, :update ]
+      resources :repositories, only: :update
+      resources :user_links, only: [ :create, :destroy ]
+    end
     resource :entropy
     resource :join_code
     resource :settings
