@@ -6,7 +6,7 @@ class Github::BackfillTest < ActiveSupport::TestCase
     Current.account = @account
     Current.user = @account.system_user
     @account.integrations.create!(provider: "github", credentials: { "api_token" => "ghp_test" })
-    @repo = @account.github_repositories.create!(github_id: 100, full_name: "aqui-ai/core", name: "core", board: boards(:writebook))
+    @repo = @account.github_repositories.create!(github_id: 100, full_name: "aqui-ai/core", name: "core", board: boards(:writebook), sync_issues: true)
   end
 
   test "imports issues from the GitHub API as cards" do

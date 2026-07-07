@@ -63,6 +63,7 @@
                 <strong class="flex-1 overflow-ellipsis"><%= repository.full_name %></strong>
                 <%= form.collection_select :board_id, @boards, :id, :name, { include_blank: "Not mapped" }, class: "input input--select" %>
                 <label class="flex align-center gap-half txt-small"><%= form.check_box :active %> Active</label>
+                <label class="flex align-center gap-half txt-small" title="Mirror GitHub issues into cards (off = pull requests drive cards)"><%= form.check_box :sync_issues %> Sync issues</label>
                 <%= form.button "Save", class: "btn txt-small", data: { form_target: "submit" } %>
               <% end %>
               <% if repository.syncing? && @integration.credential("api_token").present? %>

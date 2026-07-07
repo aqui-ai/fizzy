@@ -31,7 +31,7 @@ class Integrations::Github::WebhooksControllerTest < ActionDispatch::Integration
   end
 
   test "processing a webhook creates the linked card" do
-    repository = @account.github_repositories.create!(github_id: 424_242, full_name: "a/b", name: "b", board: boards(:writebook))
+    repository = @account.github_repositories.create!(github_id: 424_242, full_name: "a/b", name: "b", board: boards(:writebook), sync_issues: true)
     body = { action: "opened", issue: { id: 1, number: 5, title: "Hi", state: "open", labels: [], assignees: [] }, repository: { id: 424_242 } }.to_json
 
     perform_enqueued_jobs do

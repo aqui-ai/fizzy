@@ -10,6 +10,6 @@ class Account::Github::RepositoriesController < ApplicationController
 
   private
     def repository_params
-      params.expect(github_repository: [ :board_id, :active ])
+      params.expect(github_repository: [ :board_id, :active, :sync_issues ])
     end
 end

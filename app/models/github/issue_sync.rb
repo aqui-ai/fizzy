@@ -93,7 +93,7 @@ class Github::IssueSync
     end
 
     def link_card(issue)
-      if issue.card.nil? && repository.syncing?
+      if issue.card.nil? && repository.syncing? && repository.sync_issues?
         card = repository.board.cards.create!(title: card_title(issue), creator: Current.user, status: "published")
         issue.update!(card: card)
       end

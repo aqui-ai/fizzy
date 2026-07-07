@@ -6,7 +6,7 @@ class Github::IssueSyncTest < ActiveSupport::TestCase
     Current.account = @account
     Current.user = @account.system_user
     @board = boards(:writebook)
-    @repo = @account.github_repositories.create!(github_id: 100, full_name: "aqui-ai/core", name: "core", board: @board)
+    @repo = @account.github_repositories.create!(github_id: 100, full_name: "aqui-ai/core", name: "core", board: @board, sync_issues: true)
   end
 
   test "applies GitHub labels as tags plus a repo tag" do
@@ -88,6 +88,16 @@ class Github::IssueSyncTest < ActiveSupport::TestCase
     issue = @repo.issues.find_by(number: 9)
     assert_equal %w[ bug urgent ], issue.labels
     assert_equal %w[ dhh ], issue.assignees
+  end
+
+  test "does not create a card when issue sync is disabled for the repository" do
+    @repo.update!(sync_issues: false)
+
+    assert_no_difference -> { @board.cards.count } do
+      sync "opened", number: 5, title: "Fix login", state: "open"
+    end
+
+    assert_nil @repo.issues.find_by(number: 5).card
   end
 
   test "auto-registers unmapped repositories without creating a card" do

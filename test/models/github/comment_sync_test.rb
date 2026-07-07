@@ -5,7 +5,7 @@ class Github::CommentSyncTest < ActiveSupport::TestCase
     @account = accounts("37s")
     Current.account = @account
     Current.user = @account.system_user
-    @repo = @account.github_repositories.create!(github_id: 100, full_name: "aqui-ai/core", name: "core", board: boards(:writebook))
+    @repo = @account.github_repositories.create!(github_id: 100, full_name: "aqui-ai/core", name: "core", board: boards(:writebook), sync_issues: true)
     Github::IssueSync.new(
       "action" => "opened",
       "issue" => { "id" => 50, "number" => 7, "title" => "T", "state" => "open", "labels" => [], "assignees" => [] },

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_07_07_120000) do
+ActiveRecord::Schema[8.2].define(version: 2026_07_07_130000) do
   create_table "accesses", id: :uuid, force: :cascade do |t|
     t.datetime "accessed_at"
     t.uuid "account_id", null: false
@@ -427,6 +427,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_07_120000) do
     t.string "html_url", limit: 255
     t.string "name", limit: 255
     t.string "owner", limit: 255
+    t.boolean "sync_issues", default: false, null: false
     t.datetime "updated_at", null: false
     t.index ["account_id", "full_name"], name: "index_github_repositories_on_account_and_full_name", unique: true
     t.index ["account_id", "github_id"], name: "index_github_repositories_on_account_and_github_id", unique: true

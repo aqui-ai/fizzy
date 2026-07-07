@@ -5,7 +5,7 @@ class Report::GithubTest < ActiveSupport::TestCase
     @account = accounts("37s")
     Current.account = @account
     Current.user = @account.system_user
-    @repo = @account.github_repositories.create!(github_id: 100, full_name: "aqui-ai/core", name: "core", board: boards(:writebook))
+    @repo = @account.github_repositories.create!(github_id: 100, full_name: "aqui-ai/core", name: "core", board: boards(:writebook), sync_issues: true)
   end
 
   test "counts open and closed linked cards by repository" do

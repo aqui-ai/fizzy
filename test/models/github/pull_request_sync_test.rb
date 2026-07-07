@@ -8,7 +8,7 @@ class Github::PullRequestSyncTest < ActiveSupport::TestCase
     @board = boards(:writebook)
     @account.integrations.create!(provider: "github",
       settings: { "in_progress_column_name" => "In progress", "in_review_column_name" => "Review" })
-    @repo = @account.github_repositories.create!(github_id: 100, full_name: "aqui-ai/core", board: @board)
+    @repo = @account.github_repositories.create!(github_id: 100, full_name: "aqui-ai/core", board: @board, sync_issues: true)
 
     Github::IssueSync.new(
       "action" => "opened",
