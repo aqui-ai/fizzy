@@ -29,7 +29,13 @@
                 placeholder: @integration.credential("webhook_secret").present? ? "•••••••• (set — leave blank to keep)" : "Enter a secret" %>
         </label>
         <label class="flex flex-column gap-half">
+          <strong>"In progress" column name</strong>
+          <span class="txt-subtle txt-small">Cards move here when a draft PR opens.</span>
+          <%= form.text_field :in_progress_column_name, value: @integration.setting("in_progress_column_name"), class: "input", placeholder: "In Progress" %>
+        </label>
+        <label class="flex flex-column gap-half">
           <strong>"In review" column name</strong>
+          <span class="txt-subtle txt-small">Cards move here when a PR is ready for review; they close when it merges.</span>
           <%= form.text_field :in_review_column_name, value: @integration.setting("in_review_column_name"), class: "input", placeholder: "In Review" %>
         </label>
         <label class="flex flex-column gap-half">

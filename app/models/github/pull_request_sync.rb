@@ -1,4 +1,6 @@
 class Github::PullRequestSync
+  Link = Data.define(:card, :automate)
+
   def initialize(payload)
     @action = payload["action"]
     @pr = payload["pull_request"] || {}
@@ -8,6 +10,7 @@ class Github::PullRequestSync
   def process
     return unless repository
 
+    @link = resolve_link
     pull_request = upsert
     apply pull_request
   end
@@ -28,38 +31,87 @@ class Github::PullRequestSync
           merged_at: @pr["merged_at"],
           head_ref: @pr.dig("head", "ref"),
           board_id: repository.board_id,
-          card: pull_request.card || linked_card,
+          card: pull_request.card || @link&.card,
           last_synced_at: Time.current
         )
       end
     end
 
     def apply(pull_request)
-      case @action
-      when "opened", "ready_for_review"
-        move_to_review pull_request
-      when "closed"
-        pull_request.card&.close if pull_request.merged?
-      end
-    end
-
-    def move_to_review(pull_request)
       card = pull_request.card
-      return unless card
+      return unless card && automate?
 
-      column = card.board.columns.find_by(name: review_column_name)
-      card.triage_into(column) if column && card.column_id != column.id
-    end
-
-    # Links to the card of the GitHub issue referenced in the PR (e.g. "Closes #42").
-    def linked_card
-      references = [ @pr["title"], @pr["body"], @pr.dig("head", "ref") ].compact.join(" ")
-      if number = references[/#(\d+)/, 1]
-        repository.issues.find_by(number: number)&.card
+      case @action
+      when "opened", "reopened"
+        advance card, draft? ? in_progress_column(card) : in_review_column(card)
+      when "ready_for_review"
+        advance card, in_review_column(card)
+      when "converted_to_draft"
+        advance card, in_progress_column(card)
+      when "closed"
+        complete card if pull_request.merged? && targets_default_branch?
       end
     end
 
-    def review_column_name
-      Current.account.github_integration.setting("in_review_column_name").presence || "In Review"
+    def automate?
+      @link&.automate
+    end
+
+    def advance(card, column)
+      return if column.nil? || card.closed? || card.column_id == column.id
+      card.triage_into column
+    end
+
+    def complete(card)
+      card.close unless card.closed?
+    end
+
+    # Prefer a card referenced by a KEY-NUMBER token; fall back to the legacy
+    # GitHub issue number ("#42") so issue-mirrored repos keep working.
+    def resolve_link
+      link_from_references || legacy_issue_link
+    end
+
+    def link_from_references
+      links = Github::References.extract(reference_text).filter_map do |reference|
+        if card = Card.find_by_reference(reference.token)
+          Link.new(card, reference.automate)
+        end
+      end
+
+      links.find(&:automate) || links.first
+    end
+
+    def legacy_issue_link
+      if number = reference_text[/#(\d+)/, 1]
+        card = repository.issues.find_by(number: number)&.card
+        Link.new(card, true) if card
+      end
+    end
+
+    def reference_text
+      [ @pr["title"], @pr["body"], @pr.dig("head", "ref") ].compact.join("\n")
+    end
+
+    def draft?
+      @pr["draft"]
+    end
+
+    def targets_default_branch?
+      default_branch = @pr.dig("base", "repo", "default_branch").presence
+      default_branch.blank? || @pr.dig("base", "ref") == default_branch
+    end
+
+    def in_review_column(card)
+      column_for card, "in_review_column_name", "In Review"
+    end
+
+    def in_progress_column(card)
+      column_for card, "in_progress_column_name", "In Progress"
+    end
+
+    def column_for(card, setting_key, default_name)
+      name = Current.account.github_integration.setting(setting_key).presence || default_name
+      card.board.columns.find_by(name: name)
     end
 end

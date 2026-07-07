@@ -12,7 +12,10 @@ class Account::Github::IntegrationsController < ApplicationController
   def update
     integration = Current.account.github_integration
     integration.credentials = credentials_for(integration)
-    integration.settings = { "in_review_column_name" => github_params[:in_review_column_name] }
+    integration.settings = {
+      "in_progress_column_name" => github_params[:in_progress_column_name],
+      "in_review_column_name" => github_params[:in_review_column_name]
+    }
     integration.save!
 
     redirect_to account_github_integration_path, notice: "GitHub settings saved"
@@ -28,6 +31,6 @@ class Account::Github::IntegrationsController < ApplicationController
     end
 
     def github_params
-      @github_params ||= params.expect(github: [ :webhook_secret, :api_token, :in_review_column_name ])
+      @github_params ||= params.expect(github: [ :webhook_secret, :api_token, :in_progress_column_name, :in_review_column_name ])
     end
 end
