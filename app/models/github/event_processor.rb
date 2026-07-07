@@ -8,6 +8,12 @@ module Github::EventProcessor
     when "pull_request"
       Github::PullRequestSync.new(payload).process
       true
+    when "pull_request_review"
+      Github::PullRequestReviewSync.new(payload).process
+      true
+    when "check_suite", "status"
+      Github::ChecksSync.new(payload).process
+      true
     when "issue_comment"
       Github::CommentSync.new(payload).process
       true

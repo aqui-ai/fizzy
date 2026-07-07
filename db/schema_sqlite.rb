@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_07_07_130000) do
+ActiveRecord::Schema[8.2].define(version: 2026_07_07_140000) do
   create_table "accesses", id: :uuid, force: :cascade do |t|
     t.datetime "accessed_at"
     t.uuid "account_id", null: false
@@ -401,7 +401,9 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_07_130000) do
     t.uuid "account_id", null: false
     t.uuid "board_id"
     t.uuid "card_id"
+    t.string "checks_state"
     t.datetime "created_at", null: false
+    t.boolean "draft", default: false, null: false
     t.bigint "github_id", null: false
     t.string "head_ref", limit: 255
     t.string "html_url", limit: 255
@@ -410,6 +412,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_07_130000) do
     t.datetime "merged_at"
     t.integer "number", null: false
     t.uuid "repository_id", null: false
+    t.string "review_state"
     t.string "state", limit: 255
     t.string "title", limit: 255
     t.datetime "updated_at", null: false

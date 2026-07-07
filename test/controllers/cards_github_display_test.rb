@@ -26,6 +26,20 @@ class CardsGithubDisplayTest < ActionDispatch::IntegrationTest
     assert_match cards(:logo).git_branch_name, @response.body
   end
 
+  test "the card page shows PR review and checks state" do
+    account = accounts("37s")
+    repository = account.github_repositories.create!(github_id: 2, full_name: "aqui-ai/x", board: boards(:writebook))
+    repository.pull_requests.create!(github_id: 30, number: 8, state: "open",
+      html_url: "https://github.com/x/pull/8", card: cards(:logo),
+      review_state: "changes_requested", checks_state: "failure")
+
+    get card_path(cards(:logo))
+
+    assert_response :success
+    assert_match "changes requested", @response.body
+    assert_match "checks: failure", @response.body
+  end
+
   test "the card page hides the GitHub panel when GitHub is not configured and the card is unlinked" do
     get card_path(cards(:logo))
 

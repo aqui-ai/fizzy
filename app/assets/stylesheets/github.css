@@ -46,4 +46,21 @@
   .github-state--merged {
     color: oklch(var(--lch-purple-dark));
   }
+
+  .github-state--approved,
+  .github-state--success {
+    color: var(--color-positive);
+  }
+
+  .github-state--changes_requested,
+  .github-state--failure {
+    color: var(--color-negative);
+  }
+
+  .card-github__states {
+    align-items: center;
+    display: flex;
+    flex: none;
+    gap: var(--inline-space-half);
+  }
 }

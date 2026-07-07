@@ -27,6 +27,7 @@ class Github::PullRequestSync
           title: @pr["title"],
           html_url: @pr["html_url"],
           state: @pr["state"],
+          draft: @pr["draft"] || false,
           merged: @pr["merged"] || false,
           merged_at: @pr["merged_at"],
           head_ref: @pr.dig("head", "ref"),

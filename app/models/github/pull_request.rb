@@ -9,4 +9,8 @@ class Github::PullRequest < ApplicationRecord
   def merged?
     merged
   end
+
+  def open?
+    state == "open"
+  end
 end

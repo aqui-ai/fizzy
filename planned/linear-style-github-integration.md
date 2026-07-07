@@ -14,7 +14,16 @@ This spec re-aims the integration to the Linear model. It is a re-aiming, not a 
 - **Primary model pivots to card-as-hub / PR-linking.** GitHub-issue mirroring (`IssueSync`) is demoted to an opt-in secondary mode, kept for the OSS/inbound case.
 - **No Fizzy → GitHub write-back** in this project (avoids echo loops / conflict resolution / write scopes). Revisit only for a narrow, concrete need later.
 
-## Phase 1 — Invert + smart automation (PAT auth, reuses existing pipeline)
+## Phase 1 — Invert + smart automation (PAT auth, reuses existing pipeline) — ✅ DONE
+
+Shipped in commits: board key (`5da95f8e5`), card ref + copy-branch (`b5b216839`),
+card-ref PR linking + automation (`594ffe541`), e2e webhook test (`26d444d1a`),
+issue-mirror opt-in toggle (`25a2dd3a1`). Verified via unit + webhook integration
+tests and a live dev run. Config landed as account-level column-name settings
+(`in_progress_column_name`/`in_review_column_name`) with the target branch read
+from the webhook payload; issue mirroring is a per-repo `sync_issues` toggle
+(default off).
+
 
 ### Board key + card ref
 - `Board.key` — short uppercase prefix (`^[A-Z][A-Z0-9]{1,9}$`), **unique per account**. Auto-derive from board name on create (e.g. "aqui-core" → `CORE`); editable in board settings. Migration + backfill existing boards.
