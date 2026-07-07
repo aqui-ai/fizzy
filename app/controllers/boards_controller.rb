@@ -1,5 +1,5 @@
 class BoardsController < ApplicationController
-  wrap_parameters :board, include: %i[ name all_access auto_postpone_period_in_days public_description ]
+  wrap_parameters :board, include: %i[ name key all_access auto_postpone_period_in_days public_description ]
 
   include FilterScoped
 
@@ -96,7 +96,7 @@ class BoardsController < ApplicationController
     end
 
     def board_params
-      params.expect(board: [ :name, :all_access, :auto_postpone_period_in_days, :public_description ])
+      params.expect(board: [ :name, :key, :all_access, :auto_postpone_period_in_days, :public_description ])
     end
 
     def grantees

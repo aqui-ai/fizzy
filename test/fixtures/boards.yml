@@ -1,6 +1,7 @@
 writebook:
   id: <%= ActiveRecord::FixtureSet.identify("writebook", :uuid) %>
   name: Writebook
+  key: WRITE
   creator: david_uuid
   all_access: true
   account: 37s_uuid
@@ -8,6 +9,7 @@ writebook:
 private:
   id: <%= ActiveRecord::FixtureSet.identify("private", :uuid) %>
   name: Private board
+  key: PRIV
   creator: kevin_uuid
   all_access: false
   account: 37s_uuid
@@ -15,6 +17,7 @@ private:
 miltons_wish_list:
   id: <%= ActiveRecord::FixtureSet.identify("miltons_wish_list", :uuid) %>
   name: Milton's Wish List
+  key: WISH
   creator: mike_uuid
   all_access: true
   account: initech_uuid

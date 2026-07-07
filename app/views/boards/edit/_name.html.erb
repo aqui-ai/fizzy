@@ -6,3 +6,14 @@
           readonly: !Current.user.can_administer_board?(board) %></strong>
   </label>
 </div>
+
+<div class="flex align-center gap">
+  <label class="flex-item-grow txt-small txt-subtle">
+    Board key
+    <%= form.text_field :key, name: "board[key]", class: "input full-width txt-medium",
+          autofocus: false, placeholder: "e.g. CORE", maxlength: Board::KEY_MAX_LENGTH,
+          data: { action: "keydown.enter->form#submit:prevent, keydown.esc->form#cancel" },
+          readonly: !Current.user.can_administer_board?(board) %>
+    <span class="txt-subtle">Used to reference cards in git branches and pull requests, like <%= board.key %>-<%= 42 %>.</span>
+  </label>
+</div>
