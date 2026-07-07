@@ -42,6 +42,29 @@ class Integrations::Github::WebhooksControllerTest < ActionDispatch::Integration
     assert_predicate @account.integration_events.find_by(external_id: "dX"), :processed?
   end
 
+  test "processing a PR webhook links a native card by branch name and moves it to review" do
+    Current.account = @account
+    Current.user = @account.system_user
+    @account.github_integration.update!(settings: { "in_review_column_name" => "Review" })
+    @account.github_repositories.create!(github_id: 424_242, full_name: "a/b", name: "b", board: boards(:writebook))
+    card = boards(:writebook).cards.create!(title: "Native", creator: @account.system_user, status: "published")
+
+    body = {
+      action: "ready_for_review",
+      pull_request: { id: 9, number: 9, title: "Some work", state: "open", merged: false, draft: false,
+                      html_url: "https://github.com/a/b/pull/9", head: { ref: card.git_branch_name }, base: { ref: "main" } },
+      repository: { id: 424_242 }
+    }.to_json
+
+    perform_enqueued_jobs do
+      post integrations_github_webhook_path, params: body, headers: signed_headers(body, "pull_request", delivery: "pr9")
+    end
+
+    assert_equal card, @account.github_repositories.first.pull_requests.find_by(number: 9).card
+    assert_equal columns(:writebook_review), card.reload.column
+    assert_predicate @account.integration_events.find_by(external_id: "pr9"), :processed?
+  end
+
   test "rejects an invalid signature" do
     body = "{}"
 
