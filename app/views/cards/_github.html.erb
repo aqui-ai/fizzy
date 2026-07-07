@@ -1,6 +1,14 @@
-<% if card.github_linked? %>
+<% if card.published? && (card.github_linked? || card.account.github_integration.persisted?) %>
   <div class="card-github panel">
     <h3 class="card-github__label txt-x-small txt-uppercase txt-subtle">GitHub</h3>
+
+    <div class="card-github__row">
+      <span class="card-github__ref txt-small txt-subtle overflow-ellipsis" title="Card reference"><%= card.reference %></span>
+      <%= button_to_copy_to_clipboard(card.git_branch_name) do %>
+        <%= icon_tag "copy-paste" %>
+        <span class="for-screen-reader">Copy git branch name</span>
+      <% end %>
+    </div>
 
     <% if issue = card.github_issue %>
       <div class="card-github__row">

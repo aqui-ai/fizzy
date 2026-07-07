@@ -15,4 +15,21 @@ class CardsGithubDisplayTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_match "aqui-ai/aqui-core#42", @response.body
   end
+
+  test "the card page shows the reference and copy-branch action when GitHub is configured" do
+    accounts("37s").github_integration.update!(credentials: { webhook_secret: "s" })
+
+    get card_path(cards(:logo))
+
+    assert_response :success
+    assert_match cards(:logo).reference, @response.body
+    assert_match cards(:logo).git_branch_name, @response.body
+  end
+
+  test "the card page hides the GitHub panel when GitHub is not configured and the card is unlinked" do
+    get card_path(cards(:logo))
+
+    assert_response :success
+    assert_no_match "card-github", @response.body
+  end
 end
