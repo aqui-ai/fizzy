@@ -58,11 +58,23 @@ Repo mapping gains a mode toggle (pr-linking [default] vs issue-mirror). PR-link
 ### Tests
 Card-ref parse/resolve; branch-name generation; keyword closing vs non-closing; per-board column transitions + guards; native-card (no issue) linking; merge-to-non-target-branch does not close; reopened handling.
 
-## Phase 2 — Live PR panel + GitHub App (fast-follow)
+## Phase 2 — Live PR panel + GitHub App (fast-follow) — ✅ DONE
 
-- **GitHub App** replacing the static PAT: per-install token exchange, finer scopes, org-wide repo selection, richer events. `Github::Client` gains installation-token auth (still read-only).
-- New events: `pull_request_review` (submitted), `check_run`/`check_suite`/`status`, `push`/`create` (commit-message parsing + branch-detected *In Progress*).
-- **Enriched card PR panel**: live state (draft/open/review/merged), CI checks, reviewer avatars + actions. Extends the existing card GitHub panel.
+Shipped in commits: live review/checks state (`06d015862`), push/commit → In
+Progress (`de5f23f93`), GitHub App auth (`47dd9a81e`). Full suite green (1671).
+
+- **GitHub App** auth: `Github::App` signs an RS256 JWT with the app private key
+  and exchanges it for a cached installation token; `Github::Auth.token` prefers
+  it over the PAT. Settings screen gained App ID / installation ID / private key.
+  (Client stays read-only. Real token exchange is stubbed in tests — not yet
+  exercised against a live GitHub App.)
+- New events wired in `Github::EventProcessor`: `pull_request_review` →
+  `PullRequestReviewSync` (review verdict), `check_suite`/`status` →
+  `ChecksSync` (CI state), `push`/`create` → `PushSync` (commit/branch parsing →
+  untriaged card advances to In Progress, guarded against demotion/closed cards).
+- **Enriched card PR panel**: draft/open/merged state plus review (approved /
+  changes requested) and checks (success/failure/pending) badges. Reviewer
+  avatars were not added (would need per-reviewer storage) — deferred.
 
 ## Phase 3 — Narrow bidirectional (deferred, only if needed)
 
