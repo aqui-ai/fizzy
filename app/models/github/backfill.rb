@@ -1,7 +1,7 @@
 class Github::Backfill
   def initialize(repository)
     @repository = repository
-    @token = Current.account.github_integration.credential("api_token")
+    @token = Github::Auth.token(Current.account.github_integration)
   end
 
   def run

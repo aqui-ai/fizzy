@@ -39,10 +39,27 @@
           <%= form.text_field :in_review_column_name, value: @integration.setting("in_review_column_name"), class: "input", placeholder: "In Review" %>
         </label>
         <label class="flex flex-column gap-half">
-          <strong>API token <span class="txt-subtle txt-small">(for backfill)</span></strong>
+          <strong>API token <span class="txt-subtle txt-small">(for backfill; used when no GitHub App is configured)</span></strong>
           <%= form.password_field :api_token, value: nil, autocomplete: "off", class: "input",
                 placeholder: @integration.credential("api_token").present? ? "•••••••• (set — leave blank to keep)" : "ghp_… (optional)" %>
         </label>
+
+        <fieldset class="flex flex-column gap-half">
+          <legend class="txt-small txt-subtle">GitHub App (preferred over an API token)</legend>
+          <label class="flex flex-column gap-half">
+            <strong>App ID</strong>
+            <%= form.text_field :app_id, value: @integration.credential("app_id"), autocomplete: "off", class: "input", placeholder: "123456" %>
+          </label>
+          <label class="flex flex-column gap-half">
+            <strong>Installation ID</strong>
+            <%= form.text_field :app_installation_id, value: @integration.credential("app_installation_id"), autocomplete: "off", class: "input", placeholder: "12345678" %>
+          </label>
+          <label class="flex flex-column gap-half">
+            <strong>Private key <span class="txt-subtle txt-small">(PEM)</span></strong>
+            <%= form.text_area :app_private_key, value: nil, autocomplete: "off", rows: 4, class: "input",
+                  placeholder: @integration.credential("app_private_key").present? ? "•••••••• (set — leave blank to keep)" : "-----BEGIN RSA PRIVATE KEY-----" %>
+          </label>
+        </fieldset>
         <%= form.button "Save", class: "btn btn--link align-self-start", data: { form_target: "submit" } %>
       <% end %>
     </section>
