@@ -14,6 +14,9 @@ module Github::EventProcessor
     when "check_suite", "status"
       Github::ChecksSync.new(payload).process
       true
+    when "push", "create"
+      Github::PushSync.new(payload).process
+      true
     when "issue_comment"
       Github::CommentSync.new(payload).process
       true
