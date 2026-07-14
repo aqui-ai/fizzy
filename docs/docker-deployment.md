@@ -101,6 +101,40 @@ Set `BASE_URL` to the full URL where your Fizzy instance is accessible:
 docker run --env BASE_URL=https://fizzy.example.com ...
 ```
 
+#### Error and uptime monitoring (optional)
+
+Self-hosted Fizzy can report unhandled request errors, background job failures,
+and explicit `Rails.error` reports to Sentry. Monitoring remains disabled when
+`SENTRY_DSN` is not set.
+
+- `SENTRY_DSN` - the ingestion DSN from the Sentry project settings
+- `SENTRY_ENVIRONMENT` - environment name; defaults to the Rails environment
+- `SENTRY_RELEASE` - immutable source revision or image release identifier
+
+```sh
+docker run \
+  --env SENTRY_DSN=... \
+  --env SENTRY_ENVIRONMENT=production \
+  --env SENTRY_RELEASE=<full-source-revision> \
+  ...
+```
+
+Fizzy disables Sentry tracing, logger breadcrumbs, and default PII collection.
+Keep the DSN in the protected production environment to prevent unauthorized
+event ingestion; never commit it.
+
+After deployment, send one intentional test event and confirm it appears with
+the expected environment and release:
+
+```sh
+docker exec fizzy bin/rails runner \
+  'event_id = Sentry.capture_message("Fizzy monitoring verification"); Sentry.flush; abort "Sentry is disabled" unless event_id; puts event_id'
+```
+
+For continuous availability checks, create a Sentry Uptime monitor for
+`https://your-fizzy-domain.example/up` and enable email notifications. This
+checks the complete public path through DNS, TLS, and any reverse proxy.
+
 #### VAPID keys
 
 Fizzy can also send Web Push notifications.
