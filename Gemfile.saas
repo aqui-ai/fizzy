@@ -15,8 +15,6 @@ gem "action_push_native"
 
 # Telemetry
 gem "rails_structured_logging", bc: "rails-structured-logging"
-gem "sentry-ruby"
-gem "sentry-rails"
 gem "yabeda"
 gem "yabeda-actioncable"
 gem "yabeda-activejob", github: "basecamp/yabeda-activejob", branch: "bulk-and-scheduled-jobs"
