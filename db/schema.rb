@@ -333,12 +333,12 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_07_140000) do
     t.uuid "account_id", null: false
     t.datetime "created_at", null: false
     t.string "external_id"
-    t.string "external_type"
+    t.string "external_type", limit: 191
     t.string "external_url"
     t.uuid "linkable_id", null: false
     t.string "linkable_type", null: false
     t.json "metadata"
-    t.string "provider", null: false
+    t.string "provider", limit: 191, null: false
     t.datetime "updated_at", null: false
     t.index ["account_id", "provider", "external_type", "external_id"], name: "index_external_links_on_account_provider_and_external"
     t.index ["linkable_type", "linkable_id"], name: "index_external_links_on_linkable"

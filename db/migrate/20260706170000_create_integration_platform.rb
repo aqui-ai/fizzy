@@ -34,8 +34,8 @@ class CreateIntegrationPlatform < ActiveRecord::Migration[8.2]
       t.uuid :account_id, null: false
       t.string :linkable_type, null: false
       t.uuid :linkable_id, null: false
-      t.string :provider, null: false
-      t.string :external_type
+      t.string :provider, limit: 191, null: false
+      t.string :external_type, limit: 191
       t.string :external_id
       t.string :external_url
       t.json :metadata
